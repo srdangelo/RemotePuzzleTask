@@ -16,13 +16,9 @@ class State{
   }
 
   updateState(){
-
-
   }
 
   sendState(){
-
-
   }
 
   updateBox(num id, num x, num y, String color){
@@ -31,8 +27,6 @@ class State{
 
     int myBoxesLengthSqrt=sqrt(myBoxesLength).toInt();
     if (myBoxesLengthSqrt*myBoxesLengthSqrt!=myBoxesLength){
-      //print ("EXIT, NOT A SQUARE");
-      //return;
     }
     for(Box box in myBoxes){
       if(id == box.id){

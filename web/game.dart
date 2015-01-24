@@ -34,17 +34,10 @@ class Game extends TouchLayer{
     width = canvas.width;
     height = canvas.height;
 
-    
-    //tmanager.registerEvents(document.documentElement);
     tmanager.registerEvents(document.documentElement);
     tmanager.addTouchLayer(this);
     
     myState = new State(this);
-
-
-    // redraw the canvas every 40 milliseconds runs animate function every 40 milliseconds
-    //updating at 15fps for now, will test for lag at 30 fps later
-    //new Timer.periodic(const Duration(milliseconds : 80), (timer) => animate());
 
     window.animationFrame.then(animate);
 
@@ -56,12 +49,10 @@ class Game extends TouchLayer{
 // */
   void animate(double i) {
     window.animationFrame.then(animate);
-    //print("time spent on listen");
 //    ws.onMessage.listen((MessageEvent e) {
 //      //print (e.data);
 //      handleMsg(e.data);
 //    });
-    //print("time spent on draw");
     draw();
 
   }
@@ -72,9 +63,7 @@ class Game extends TouchLayer{
 // */
   void draw() {
     if (flagDraw){
-      //print ('drawing');
       clear();
-      //ctx.clearRect(0, 0, width, height);
       if (phaseBreak == 'false'){
         ctx.fillStyle = 'white';
         ctx.font = '30px sans-serif';
@@ -84,8 +73,6 @@ class Game extends TouchLayer{
         ctx.fillText("Score: ${score}", 100, 100);
         for(Box box in myState.myBoxes){
           box.draw(ctx);
-          //ctx.fillStyle = box.color;
-          //ctx.fillRect(box.x, box.y, 50, 50);
         }
       flagDraw = false;
       }
@@ -109,7 +96,6 @@ class Game extends TouchLayer{
   //parse incoming messages
   handleMsg(data){
     flagDraw = true;
-    //print (data);
     //'u' message indicates a state update
     if(data[0] == "u"){
       //split up the message via each object
@@ -119,7 +105,6 @@ class Game extends TouchLayer{
         List<String> data = object.split(",");
         if(data.length > 3){
           myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
-          //pieceLocation();
         }
       }
     }
