@@ -10,10 +10,12 @@ part 'serverBox.dart';
 part 'serverState.dart';
 part 'serverTrial.dart';
 part 'serverClient.dart';
+part 'imgSets.dart';
 
 
 //List of Clients connected to the server
 List<myClient> clients = new List();
+
 
 //Function to Manage Clients
 void handleWebSocket(WebSocket socket){
