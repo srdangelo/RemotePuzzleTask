@@ -95,7 +95,7 @@ Trial trial;
 void main() {
 
   //server pathing
-  var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web/";
+  var pathToBuild = "C:\Users\SESPWalkup\Documents\GitHub\RemotePuzzleTask\build\web";
 
   var staticFiles = new VirtualDirectory(pathToBuild);
   staticFiles.allowDirectoryListing = true;
@@ -104,13 +104,15 @@ void main() {
     staticFiles.serveFile(new File(indexUri.toFilePath()), request);
   };
   //serve the test.html to port 8080
-  HttpServer.bind('127.0.0.1', 8085).then((server) {
+  HttpServer.bind('10.101.150.40', 8084).then((server) {
+  //HttpServer.bind('127.0.0.1', 8085).then((server) {
     server.listen(staticFiles.serveRequest);
   });
 
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('127.0.0.1', 4040).then((server) {
+    HttpServer.bind('10.101.150.40', 4040).then((server) {
+    //HttpServer.bind('127.0.0.1', 4040).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {
           // Upgrade a HttpRequest to a WebSocket connection.

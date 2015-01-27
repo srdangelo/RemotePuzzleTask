@@ -23,7 +23,7 @@ canvas {
 
 #game {
    z-index: 0;
-   background-color: black;
+   background-color: grey;
    background-repeat: repeat;
    background-position: 0 0;
 }

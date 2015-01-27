@@ -496,6 +496,16 @@ abstract class ClosureMirror implements InstanceMirror {
    *
    * The function associated with an instance of a class that has a [:call:]
    * method is that [:call:] method.
+   *
+   * A Dart implementation might choose to create a class for each closure
+   * expression, in which case [:function:] would be the same as
+   * [:type.declarations[#call]:]. But the Dart language model does not require
+   * this. A more typical implementation involves a single closure class for
+   * each type signature, where the call method dispatches to a function held
+   * in the closure rather the call method
+   * directly implementing the closure body. So one cannot rely on closures from
+   * distinct closure expressions having distinct classes ([:type:]), but one
+   * can rely on them having distinct functions ([:function:]).
    */
   MethodMirror get function;
 
@@ -829,6 +839,8 @@ abstract class FunctionTypeMirror implements ClassMirror {
   /**
    * A mirror on the [:call:] method for the reflectee.
    */
+  // This is only here because in the past the VM did not implement a call
+  // method on closures.
   MethodMirror get callMethod;
 }
 
@@ -900,10 +912,10 @@ abstract class MethodMirror implements DeclarationMirror {
   List<ParameterMirror> get parameters;
 
   /**
-   * Is the reflectee static?
+   * A function is considered non-static iff it is permited to refer to 'this'.
    *
-   * For the purposes of the mirrors library, a top-level function is
-   * considered static.
+   * Note that generative constructors are considered non-static, whereas
+   * factory constructors are considered static.
    */
   bool get isStatic;
 

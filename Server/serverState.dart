@@ -46,14 +46,14 @@ class State{
         if(box.x < 0){
           box.x = box.x * -1;
         }
-        else if(box.x > 1200){
+        else if(box.x > 1920){
           box.x = box.x -15;
         }
 
         if(box.y < 0){
           box.y = box.y * -1;
         }
-        else if(box.y > 800){
+        else if(box.y > 1020){
           box.y = box.y -15;
         }
       }

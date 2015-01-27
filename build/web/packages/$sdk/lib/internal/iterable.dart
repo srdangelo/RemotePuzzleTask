@@ -175,10 +175,15 @@ abstract class ListIterable<E> extends IterableBase<E>
   Iterable map(f(E element)) => new MappedListIterable(this, f);
 
   E reduce(E combine(var value, E element)) {
+    int length = this.length;
     if (length == 0) throw IterableElementError.noElement();
     E value = elementAt(0);
     for (int i = 1; i < length; i++) {
       value = combine(value, elementAt(i));
+      if (length != this.length) {
+        throw new ConcurrentModificationError(this);
+      }
+
     }
     return value;
   }
@@ -195,11 +200,11 @@ abstract class ListIterable<E> extends IterableBase<E>
     return value;
   }
 
-  Iterable<E> skip(int count) => new SubListIterable(this, count, null);
+  Iterable<E> skip(int count) => new SubListIterable<E>(this, count, null);
 
   Iterable<E> skipWhile(bool test(E element)) => super.skipWhile(test);
 
-  Iterable<E> take(int count) => new SubListIterable(this, 0, count);
+  Iterable<E> take(int count) => new SubListIterable<E>(this, 0, count);
 
   Iterable<E> takeWhile(bool test(E element)) => super.takeWhile(test);
 
@@ -226,7 +231,7 @@ abstract class ListIterable<E> extends IterableBase<E>
 }
 
 class SubListIterable<E> extends ListIterable<E> {
-  final Iterable<E> _iterable;
+  final Iterable<E> _iterable;  // Has efficient length and elementAt.
   final int _start;
   /** If null, represents the length of the iterable. */
   final int _endOrLength;
@@ -276,18 +281,37 @@ class SubListIterable<E> extends ListIterable<E> {
 
   Iterable<E> skip(int count) {
     if (count < 0) throw new RangeError.value(count);
-    return new SubListIterable(_iterable, _start + count, _endOrLength);
+    int newStart = _start + count;
+    if (_endOrLength != null && newStart >= _endOrLength) {
+      return new EmptyIterable<E>();
+    }
+    return new SubListIterable<E>(_iterable, newStart, _endOrLength);
   }
 
   Iterable<E> take(int count) {
     if (count < 0) throw new RangeError.value(count);
     if (_endOrLength == null) {
-      return new SubListIterable(_iterable, _start, _start + count);
+      return new SubListIterable<E>(_iterable, _start, _start + count);
     } else {
       int newEnd = _start + count;
       if (_endOrLength < newEnd) return this;
-      return new SubListIterable(_iterable, _start, newEnd);
+      return new SubListIterable<E>(_iterable, _start, newEnd);
     }
+  }
+
+  List<E> toList({bool growable: true}) {
+    int start = _start;
+    int end = _iterable.length;
+    if (_endOrLength != null && _endOrLength < end) end = _endOrLength;
+    int length = end - start;
+    if (length < 0) length = 0;
+    List result = growable ? (new List<E>()..length = length)
+                           : new List<E>(length);
+    for (int i = 0; i < length; i++) {
+      result[i] = _iterable.elementAt(start + i);
+      if (_iterable.length < end) throw new ConcurrentModificationError(this);
+    }
+    return result;
   }
 }
 
@@ -740,7 +764,7 @@ abstract class BidirectionalIterator<T> implements Iterator<T> {
  *
  * The uses of this class will be replaced by mixins.
  */
-class IterableMixinWorkaround {
+class IterableMixinWorkaround<T> {
   static bool contains(Iterable iterable, var element) {
     for (final e in iterable) {
       if (e == element) return true;
@@ -934,8 +958,8 @@ class IterableMixinWorkaround {
     return buffer.toString();
   }
 
-  static Iterable where(Iterable iterable, bool f(var element)) {
-    return new WhereIterable(iterable, f);
+  Iterable<T> where(Iterable iterable, bool f(var element)) {
+    return new WhereIterable<T>(iterable, f);
   }
 
   static Iterable map(Iterable iterable, f(var element)) {
@@ -950,28 +974,28 @@ class IterableMixinWorkaround {
     return new ExpandIterable(iterable, f);
   }
 
-  static Iterable takeList(List list, int n) {
+  Iterable<T> takeList(List list, int n) {
     // The generic type is currently lost. It will be fixed with mixins.
-    return new SubListIterable(list, 0, n);
+    return new SubListIterable<T>(list, 0, n);
   }
 
-  static Iterable takeWhile(Iterable iterable, bool test(var value)) {
+  Iterable<T> takeWhile(Iterable iterable, bool test(var value)) {
     // The generic type is currently lost. It will be fixed with mixins.
-    return new TakeWhileIterable(iterable, test);
+    return new TakeWhileIterable<T>(iterable, test);
   }
 
-  static Iterable skipList(List list, int n) {
+  Iterable<T> skipList(List list, int n) {
     // The generic type is currently lost. It will be fixed with mixins.
-    return new SubListIterable(list, n, null);
+    return new SubListIterable<T>(list, n, null);
   }
 
-  static Iterable skipWhile(Iterable iterable, bool test(var value)) {
+  Iterable<T> skipWhile(Iterable iterable, bool test(var value)) {
     // The generic type is currently lost. It will be fixed with mixins.
-    return new SkipWhileIterable(iterable, test);
+    return new SkipWhileIterable<T>(iterable, test);
   }
 
-  static Iterable reversedList(List list) {
-    return new ReversedListIterable(list);
+  Iterable<T> reversedList(List list) {
+    return new ReversedListIterable<T>(list);
   }
 
   static void sortList(List list, int compare(a, b)) {
@@ -1009,10 +1033,10 @@ class IterableMixinWorkaround {
     }
   }
 
-  static Iterable getRangeList(List list, int start, int end) {
+  Iterable<T> getRangeList(List list, int start, int end) {
     _rangeCheck(list, start, end);
     // The generic type is currently lost. It will be fixed with mixins.
-    return new SubListIterable(list, start, end);
+    return new SubListIterable<T>(list, start, end);
   }
 
   static void setRangeList(List list, int start, int end,
@@ -1097,8 +1121,8 @@ class IterableMixinWorkaround {
     }
   }
 
-  static Map<int, dynamic> asMapList(List l) {
-    return new ListMapView(l);
+  Map<int, T> asMapList(List l) {
+    return new ListMapView<T>(l);
   }
 
   static bool setContainsAll(Set set, Iterable other) {

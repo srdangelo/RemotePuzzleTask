@@ -75,8 +75,7 @@ class _UnicodeSubsetEncoder extends Converter<String, List<int>> {
   const _UnicodeSubsetEncoder(this._subsetMask);
 
   List<int> convert(String string) {
-    // TODO(11971): Use Uint8List when possible.
-    List result = new List<int>(string.length);
+    List result = new Uint8List(string.length);
     for (int i = 0; i < string.length; i++) {
       var codeUnit = string.codeUnitAt(i);
       if ((codeUnit & ~_subsetMask) != 0) {
@@ -203,16 +202,7 @@ abstract class _UnicodeSubsetDecoder extends Converter<List<int>, String> {
    * The converter works more efficiently if the given [sink] is a
    * [StringConversionSink].
    */
-  ByteConversionSink startChunkedConversion(Sink<String> sink) {
-    StringConversionSink stringSink;
-    if (sink is StringConversionSink) {
-      stringSink = sink;
-    } else {
-      stringSink = new StringConversionSink.from(sink);
-    }
-    // TODO(lrn): Use stringSink.asUtf16Sink() if it becomes available.
-    return new _Latin1DecoderSink(_allowInvalid, stringSink);
-  }
+  ByteConversionSink startChunkedConversion(Sink<String> sink);
 
   // Override the base-class's bind, to provide a better type.
   Stream<String> bind(Stream<List<int>> stream) => super.bind(stream);
@@ -302,10 +292,10 @@ class _SimpleAsciiDecoderSink extends ByteConversionSinkBase {
   void addSlice(List<int> source, int start, int end, bool isLast) {
     final int length = source.length;
     if (start < 0 || start > length) {
-      throw new RangeError.range(start, 0, length - 1);
+      throw new RangeError.range(start, 0, length);
     }
     if (end < start || end > length) {
-      throw new RangeError.range(end, start, length - 1);
+      throw new RangeError.range(end, start, length);
     }
     if (start < end) {
       if (start != 0 || end != length) {

@@ -29,9 +29,6 @@ class Box implements Touchable{
   Timer dragTimer;
 
   Box(this.id, this.x, this.y, this.color){
-    //tmanager.registerEvents(this);
-    //document.onMouseUp.listen((e) => myTouchUp(e));
-    //document.onTouchEnd.listen((e) => touchUp(e));
     dragged= false;
     img.src = "images/${this.color}.png";
     imageWidth=img.width;
@@ -63,18 +60,8 @@ class Box implements Touchable{
     dragged = true;
     touched_x_offset=x-e.touchX;
     touched_y_offset=y-e.touchY;
-    //dragTimer = new Timer.periodic(const Duration(milliseconds : 80), (timer) => sendDrag(e.touchX, e.touchY));
-//    print(e.touchX);
     return true;
   }
-//
-//  bool myTouchDown(MouseEvent event) {
-//    dragged = true;
-//    ws.send("c:${id}, ${color}, ${game.clientID}");
-//    //dragTimer = new Timer.periodic(const Duration(milliseconds : 80), (timer) => sendDrag(event.touchX, e.touchY));
-////    print(e.touchX);
-//    return true;
-//  }
 
   void touchUp(Contact event) {
     dragged = false;
@@ -86,26 +73,9 @@ class Box implements Touchable{
     }
     pieceLocation();
     ws.send("b:${id}, ${color}, ${game.clientID}");
-    //print("touchup ${id}");
   }
 
-  //this is same as touchUp but the touch.dart doesn't seem have an error in touchUp
-//  void myTouchUp(MouseEvent event) {
-//    print('touchup');
-//    try{
-//      //dragTimer.cancel();
-//    }
-//    catch(exception){
-//      print(exception);
-//    }
-//    dragged = false;
-//    pieceLocation();
-//    ws.send("b:${id}, ${color}, ${game.clientID}");
-////    print("touchup ${id}");
-//  }
-
   void touchDrag(Contact e) {
-    //print('touchdrag');
     //since touchUp has issues it impacts touchDrag so have extra bool to makes sure this are being dragged
     if(dragged){
       sendDrag(touched_x_offset+ e.touchX,touched_y_offset+ e.touchY);
@@ -117,7 +87,8 @@ class Box implements Touchable{
 
 
 
-  void pieceLocation ()//small bug. One must drag the correct box in order to assign neighbors.
+  void pieceLocation ()
+  //small bug. One must drag the correct box in order to assign neighbors.
   //for example. 1 and 2 are connected. 1 and 3 should be neighbors. User drags 2 and puts
   //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
   //checks for 2.
@@ -182,8 +153,6 @@ class Box implements Touchable{
     num boxWidth = img.width;
     num boxHeight = img.height;
     ctx.translate(x, y);
-//    ctx.fillStyle = 'yellow';
-//    ctx.fillRect(x, y, 50, 50);
     ctx.drawImage(img, 0, 0);
     }
     ctx.restore();

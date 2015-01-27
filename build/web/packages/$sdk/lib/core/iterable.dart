@@ -54,13 +54,14 @@ abstract class Iterable<E> {
   }
 
   /**
-   * Returns an Iterator that iterates over this Iterable object.
+   * Returns a new `Iterator` that allows iterating the elements of this
+   * `Iterable`.
    */
   Iterator<E> get iterator;
 
   /**
-   * Returns a lazy [Iterable] where each element [:e:] of `this` is replaced
-   * by the result of [:f(e):].
+   * Returns a new lazy [Iterable] with elements that are created by
+   * calling `f` on the elements of this `Iterable`.
    *
    * This method returns a view of the mapped elements. As long as the
    * returned [Iterable] is not iterated over, the supplied function [f] will
@@ -71,7 +72,7 @@ abstract class Iterable<E> {
   Iterable map(f(E element));
 
   /**
-   * Returns a lazy [Iterable] with all elements that satisfy the
+   * Returns a new lazy [Iterable] with all elements that satisfy the
    * predicate [test].
    *
    * This method returns a view of the mapped elements. As long as the
@@ -96,7 +97,7 @@ abstract class Iterable<E> {
   /**
    * Returns true if the collection contains an element equal to [element].
    *
-   * The equality used to determine wheter [element] is equal to an element of
+   * The equality used to determine whether [element] is equal to an element of
    * the iterable, depends on the type of iterable.
    * For example, a [Set] may have a custom equality
    * (see, e.g., [Set.identical]) that its `contains` uses.
@@ -173,11 +174,11 @@ abstract class Iterable<E> {
   /**
    * Creates a [Set] containing the same elements as this iterable.
    *
-   * The returned `Set` will have the same `Set.length`
-   * as the `length` of this iterable,
-   * and its `Set.contains` will return the same result
-   * as the `contains` of this iterable.
-   * The order of the elements may be different.
+   * The set may contain fewer elements than the iterable,
+   * if the iterable contains the an element more than once,
+   * or it contains one or more elements that are equal.
+   * The order of the elements in the set is not guaranteed to be the same
+   * as for the iterable.
    */
   Set<E> toSet();
 
