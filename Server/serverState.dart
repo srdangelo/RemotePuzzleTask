@@ -193,5 +193,37 @@ class State{
       var sendScore = "s: ${score} \n";
       distributeMessage(sendScore);
     }
-
+  assignBuddies(){
+    int myBoxesLength=myBoxes.length;
+    int myBoxesLengthSqrt=sqrt(myBoxesLength).toInt();
+    if (myBoxesLengthSqrt*myBoxesLengthSqrt!=myBoxesLength){
+      print("Error, input is not a square");
+      return;
+    }
+    for(Box box in myBoxes){
+      int i = myBoxes.indexOf(box);
+      if (i % myBoxesLengthSqrt== 0){
+        box.rightBuddy = myBoxes[i + 1];
+      }
+      else if (i % myBoxesLengthSqrt == myBoxesLengthSqrt - 1){
+        box.leftBuddy = myBoxes[i - 1];
+      }
+      else {
+        box.leftBuddy = myBoxes[i - 1];
+        box.rightBuddy = myBoxes[i + 1];
+      }
+      if (i/myBoxesLengthSqrt<1){
+        box.lowerBuddy= myBoxes[i+myBoxesLengthSqrt];
+      }
+      else if (i/myBoxesLengthSqrt>=myBoxesLengthSqrt-1){
+        box.upperBuddy= myBoxes[i-myBoxesLengthSqrt];
+      }
+      else{
+        box.lowerBuddy= myBoxes[i+myBoxesLengthSqrt];
+        box.upperBuddy= myBoxes[i-myBoxesLengthSqrt];
+      }
+    }
+  }
+        
+  
 }

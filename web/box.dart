@@ -42,7 +42,7 @@ class Box implements Touchable{
       ws.send("d:${id},${newX},${newY},${color},${leftNeighbor.color},${rightNeighbor.color}, Client#${game.clientID}");
     }
     else {
-      ws.send("d:${id},${newX},${newY},${color}, ${game.clientID}");
+      ws.send("d:${id},${newX},${newY},${color}, Client#${game.clientID}");
     }
     //
     }
@@ -71,7 +71,6 @@ class Box implements Touchable{
     catch(exception){
           print(exception);
     }
-    //pieceLocation();
     ws.send("b:${id}, ${color}, ${game.clientID}");
   }
 
@@ -87,62 +86,7 @@ class Box implements Touchable{
 
 
 
-//  void pieceLocation ()
-//  //small bug. One must drag the correct box in order to assign neighbors.
-//  //for example. 1 and 2 are connected. 1 and 3 should be neighbors. User drags 2 and puts
-//  //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
-//  //checks for 2.
-//  {
-//    Box box=this;
-//    imageWidth=box.img.width;
-//    imageHeight=box.img.height;
-//      //When the boxes touch each other
-//      //assign the Neighbors according to the predetermined pattern.
-//      if (box.rightBuddy != null &&box.rightNeighbor==null){
-//        if (box.rightBuddy.x + 10 + imageWidth/2 >= box.x &&
-//            box.rightBuddy.y + 10 + imageHeight/2 >= box.y &&
-//            box.rightBuddy.x + 10  <= box.x + imageWidth/2 + 20 &&
-//            box.rightBuddy.y + 10  <= box.y + 20 + imageHeight/2){
-//           box.rightNeighbor = box.rightBuddy;
-//           box.rightBuddy.leftNeighbor = box;
-//           print ('rightneighbors!');
-//           ws.send("n:${box.id},right,${box.rightNeighbor.id}");
-//        }
-//      }
-//      if (box.leftBuddy != null && box.leftNeighbor==null){
-//        if (box.leftBuddy.x + 10 + imageWidth/2 >= box.x &&
-//            box.leftBuddy.y + 10 + imageHeight/2 >= box.y &&
-//            box.leftBuddy.x + 10  <= box.x + 20 + imageWidth/2 &&
-//            box.leftBuddy.y + 10  <= box.y + 20 + imageHeight/2){
-//           box.leftNeighbor = box.leftBuddy;
-//           box.leftBuddy.rightNeighbor = box;
-//           print ('left neighbors!');
-//           ws.send("n:${box.id},left,${box.leftNeighbor.id}");
-//        }
-//      }
-//      if (box.upperBuddy != null && box.upperNeighbor==null){
-//        if (box.upperBuddy.x + 10 + imageWidth/2 >= box.x &&
-//            box.upperBuddy.y + 10 + imageHeight/2 >= box.y &&
-//            box.upperBuddy.x + 10 <= box.x + 20 + imageWidth/2 &&
-//            box.upperBuddy.y + 10 <= box.y + 20 + imageHeight/2){
-//           box.upperNeighbor = box.upperBuddy;
-//           box.upperBuddy.lowerNeighbor = box;
-//           print ('upper neighbors!');
-//           ws.send("n:${box.id},upper,${box.upperNeighbor.id}");
-//        }
-//      }
-//      if (box.lowerBuddy != null && box.lowerNeighbor==null){
-//        if (box.lowerBuddy.x + 10 + imageWidth/2 >= box.x &&
-//            box.lowerBuddy.y + 10 + imageHeight/2 >= box.y &&
-//            box.lowerBuddy.x + 10 <= box.x + 20 + imageWidth/2 &&
-//            box.lowerBuddy.y + 10 <= box.y + 20 + imageHeight/2){
-//           box.lowerNeighbor = box.lowerBuddy;
-//           box.lowerBuddy.upperNeighbor = box;
-//           print ('lower neighbors!');
-//           ws.send("n:${box.id},lower,${box.lowerNeighbor.id}");
-//        }
-//      }
-//    }
+
 
 
 

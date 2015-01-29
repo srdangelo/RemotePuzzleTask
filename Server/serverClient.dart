@@ -7,9 +7,6 @@ class myClient {
   DateTime time = new DateTime.now();
   num clientID = 1;
   WebSocket _socket;
-  bool drag1;
-  bool drag2;
-  Box box;
 
   myClient(WebSocket ws){
         _socket = ws;
@@ -27,18 +24,9 @@ class myClient {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
+      myState.myBoxes[num.parse(data[0])].pieceLocation();
       logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
       //print (tempMsg);
-      if (num.parse(data[4]) == 1){
-         drag1 = true;
-         print(drag1);
-      }
-      if (num.parse(data[4]) == 2){
-        drag2 = true;
-      }
-      if (drag1 == true && drag2 == true){
-        box.pieceLocation();
-      }
     }
     if (msg[0] == "n"){
       //print(msg);
@@ -59,12 +47,7 @@ class myClient {
       List<String> data = tempMsg.split(",");
       //print (data);
       myState.noDrag(num.parse(data[0]));
-      if (num.parse(data[2]) == 1){
-          drag1 = false;
-       }
-      if (num.parse(data[2]) == 2){
-         drag2 = false;
-       }
+      
     }
 
   }

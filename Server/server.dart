@@ -103,16 +103,19 @@ void main() {
     var indexUri = new Uri.file(dir.path).resolve('remotepuzzletask.html');
     staticFiles.serveFile(new File(indexUri.toFilePath()), request);
   };
+  
+  final HOST = InternetAddress.LOOPBACK_IP_V4;
+  final PORT = 8084;
+  
   //serve the test.html to port 8080
-
-  HttpServer.bind('10.101.156.157', 8084).then((server) {
-  //HttpServer.bind('127.0.0.1', 8085).then((server) {
+  HttpServer.bind('10.101.156.187', 8084).then((server) {
+  //HttpServer.bind('127.0.0.1', 8084).then((server) {
     server.listen(staticFiles.serveRequest);
   });
 
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('10.101.156.157', 4040).then((server) {
+    HttpServer.bind('10.101.156.187', 4040).then((server) {
     //HttpServer.bind('127.0.0.1', 4040).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {

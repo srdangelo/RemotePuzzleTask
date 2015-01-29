@@ -21,6 +21,8 @@ Trial () {
       myState.addBox(box);
       i++;
       }
+    myState.assignBuddies();//Prepare the state so that each box has its buddies. 
+    //(The buddies are the other boxes that a box should be connected to)
     }
 
   void transition() {

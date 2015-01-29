@@ -20,11 +20,12 @@ outputMsg(String msg) {
 //standard websocket setup
 void initWebSocket([int retrySeconds = 2]) {
   var reconnectScheduled = false;
-
   outputMsg("Connecting to websocket");
-  ws = new WebSocket('ws://10.101.156.157:4040/ws');
+  //final HOST = io.InternetAddress.LOOPBACK_IP_V4;
+  final PORT = 8084;
+  //ws = new WebSocket('ws://'+'10.101.150.184'+':'+PORT.toString()+'/ws');
   //ws = new WebSocket('ws://127.0.0.1:4040/ws');
-
+  ws = new WebSocket('ws://10.101.156.187:4040/ws');
   void scheduleReconnect() {
     if (!reconnectScheduled) {
       new Timer(new Duration(milliseconds: 1000 * retrySeconds), () => initWebSocket(retrySeconds * 2));

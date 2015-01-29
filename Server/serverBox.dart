@@ -7,15 +7,21 @@ class Box{
   var color;
   num id;
   bool dragged;
-  bool moved;
+  bool moved;//Used to record which box has moved (used in dragging and moveAround)
   num gl_newX = random.nextInt(400);
   num gl_newY = random.nextInt(400);
   //Image image;
+  num imageWidth=100;
+  num imageHeight=100;
   
   Box rightNeighbor = null;
   Box leftNeighbor = null;
   Box upperNeighbor = null;
   Box lowerNeighbor = null;
+  Box rightBuddy = null;
+  Box leftBuddy = null;
+  Box upperBuddy = null;
+  Box lowerBuddy = null;
   
   Box parentGroup=null;//used to group boxes when they are connected to each other
   Box(this.id, this.x, this.y, this.color){
@@ -33,24 +39,22 @@ class Box{
     //That's the solution for now.
     //num width=image.width; 
     //num height=image.height;
-    num width=100; 
-    num height=100;
     //run recursively to move all boxes that are neighbors of the moved box
     if (leftNeighbor != null &&leftNeighbor.moved==false){
       leftNeighbor.moved=true;
-      leftNeighbor.move(dx-width, dy);
+      leftNeighbor.move(dx-imageWidth, dy);
     }
     if (rightNeighbor != null&&rightNeighbor.moved==false){
       rightNeighbor.moved=true;
-      rightNeighbor.move(dx+width, dy);
+      rightNeighbor.move(dx+imageWidth, dy);
     }
     if (upperNeighbor != null && upperNeighbor.moved==false){
       upperNeighbor.moved=true;
-      upperNeighbor.move(dx, dy+height);
+      upperNeighbor.move(dx, dy+imageHeight);
     }
     if (lowerNeighbor != null &&lowerNeighbor.moved==false){
       lowerNeighbor.moved=true;
-      lowerNeighbor.move(dx, dy-height);
+      lowerNeighbor.move(dx, dy-imageHeight);
     }
   }
 
@@ -82,58 +86,69 @@ class Box{
   }
   
   void pieceLocation ()
-   //small bug. One must drag the correct box in order to assign neighbors.
-   //for example. 1 and 2 are connected. 1 and 3 should be neighbors. User drags 2 and puts
-   //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
-   //checks for 2.
-   {
-     Box box=this;
-     var imageWidth=100;
-     var imageHeight=100;
-       //When the boxes touch each other
-       //assign the Neighbors according to the predetermined pattern.
-       if (box.rightNeighbor != null &&box.rightNeighbor==null){
-         if (box.rightNeighbor.x + 10 + imageWidth/2 >= box.x &&
-             box.rightNeighbor.y + 10 + imageHeight/2 >= box.y &&
-             box.rightNeighbor.x + 10  <= box.x + imageWidth/2 + 20 &&
-             box.rightNeighbor.y + 10  <= box.y + 20 + imageHeight/2){
-            box.rightNeighbor = box.rightNeighbor;
-            box.rightNeighbor.leftNeighbor = box;
-            print ('rightneighbors!');
-            myState.assignNeighbor(box.id,"right",box.rightNeighbor.id);
-         }
-       }
-       if (box.leftNeighbor != null && box.leftNeighbor==null){
-         if (box.leftNeighbor.x + 10 + imageWidth/2 >= box.x &&
-             box.leftNeighbor.y + 10 + imageHeight/2 >= box.y &&
-             box.leftNeighbor.x + 10  <= box.x + 20 + imageWidth/2 &&
-             box.leftNeighbor.y + 10  <= box.y + 20 + imageHeight/2){
-            box.leftNeighbor = box.leftNeighbor;
-            box.leftNeighbor.rightNeighbor = box;
-            print ('left neighbors!');
-            myState.assignNeighbor(box.id,"left",box.leftNeighbor.id);
-         }
-       }
-       if (box.upperNeighbor != null && box.upperNeighbor==null){
-         if (box.upperNeighbor.x + 10 + imageWidth/2 >= box.x &&
-             box.upperNeighbor.y + 10 + imageHeight/2 >= box.y &&
-             box.upperNeighbor.x + 10 <= box.x + 20 + imageWidth/2 &&
-             box.upperNeighbor.y + 10 <= box.y + 20 + imageHeight/2){
-            box.upperNeighbor = box.upperNeighbor;
-            box.upperNeighbor.lowerNeighbor = box;
-            myState.assignNeighbor(box.id,"upper",box.upperNeighbor.id);
-         }
-       }
-       if (box.lowerNeighbor != null && box.lowerNeighbor==null){
-         if (box.lowerNeighbor.x + 10 + imageWidth/2 >= box.x &&
-             box.lowerNeighbor.y + 10 + imageHeight/2 >= box.y &&
-             box.lowerNeighbor.x + 10 <= box.x + 20 + imageWidth/2 &&
-             box.lowerNeighbor.y + 10 <= box.y + 20 + imageHeight/2){
-            box.lowerNeighbor = box.lowerNeighbor;
-            box.lowerNeighbor.upperNeighbor = box;
-            myState.assignNeighbor(box.id,"lower",box.lowerNeighbor.id);
-         }
-       }
-     }
+    //small bug. One must drag the correct box in order to assign neighbors.
+    //for example. 1 and 2 are connected. 1 and 3 should be neighbors. User drags 2 and puts
+    //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
+    //checks for 2.
+    {
+      num distance = 20;
+      Box box=this;
+      imageWidth=100;
+      imageHeight=100;
+        //When the boxes touch each other
+        //assign the Neighbors according to the predetermined pattern.
+        if (box.rightBuddy != null && box.rightNeighbor==null){
+          if (box.rightBuddy.x - imageWidth - box.x < distance &&
+              box.rightBuddy.x - imageWidth - box.x > -distance &&
+              box.rightBuddy.y - box.y < distance &&
+              box.rightBuddy.y - box.y > -distance &&
+              box.rightBuddy.dragged==true){
+             box.rightNeighbor = box.rightBuddy;
+             box.rightBuddy.leftNeighbor = box;
+             print ('right neighbors!');
+             myState.assignNeighbor(box.id, 'right', box.rightNeighbor.id);
+             myState.calculateScore();
+          }
+        }
+        if (box.leftBuddy != null && box.leftNeighbor==null){
+          if (box.leftBuddy.x + imageWidth - box.x < distance &&
+              box.leftBuddy.x + imageWidth - box.x > -distance &&
+              box.leftBuddy.y - box.y < distance &&
+              box.leftBuddy.y - box.y > -distance&&
+              box.leftBuddy.dragged==true){
+             box.leftNeighbor = box.leftBuddy;
+             box.leftBuddy.rightNeighbor = box;
+             print ('left neighbors!');
+             myState.assignNeighbor(box.id, 'left', box.leftNeighbor.id);
+             myState.calculateScore();
+          }
+        }
+        if (box.upperBuddy != null && box.upperNeighbor==null){
+          if (box.upperBuddy.x - box.x < distance &&
+              box.upperBuddy.x - box.x > -distance &&
+              box.upperBuddy.y - imageWidth - box.y < distance &&
+              box.upperBuddy.y - imageWidth - box.y > -distance&&
+              box.upperBuddy.dragged==true){
+             box.upperNeighbor = box.upperBuddy;
+             box.upperBuddy.lowerNeighbor = box;
+             print ('upper neighbors!');
+             myState.assignNeighbor(box.id, 'upper', box.upperNeighbor.id);
+             myState.calculateScore();
+          }
+        }
+        if (box.lowerBuddy != null && box.lowerNeighbor==null){
+          if (box.lowerBuddy.x - box.x < distance &&
+              box.lowerBuddy.x - box.x > -distance &&
+              box.lowerBuddy.y + imageWidth - box.y < distance &&
+              box.lowerBuddy.y + imageWidth - box.y > -distance&&
+              box.lowerBuddy.dragged==true){
+             box.lowerNeighbor = box.lowerBuddy;
+             box.lowerBuddy.upperNeighbor = box;
+             print ('lower neighbors!');
+             myState.assignNeighbor(box.id, 'lower', box.lowerNeighbor.id);
+             myState.calculateScore();
+          }
+        }
+      }
 }
 

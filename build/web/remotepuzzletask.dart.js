@@ -465,17 +465,6 @@ var $$ = Object.create(null);
         throw H.wrapException(P.ArgumentError$(other));
       return receiver - other;
     },
-    $mod: function(receiver, other) {
-      var result = receiver % other;
-      if (result === 0)
-        return 0;
-      if (result > 0)
-        return result;
-      if (other < 0)
-        return result - other;
-      else
-        return result + other;
-    },
     _tdivFast$1: function(receiver, other) {
       return (receiver | 0) === receiver ? receiver / other | 0 : this.toInt$0(receiver / other);
     },
@@ -2988,18 +2977,6 @@ var $$ = Object.create(null);
           return H.ioore(src, i);
         C.JSArray_methods.$indexSet(dst, j, src[i]);
       }
-  },
-  Lists_indexOf: function(a, element, startIndex, endIndex) {
-    var i;
-    if (startIndex >= a.length)
-      return -1;
-    for (i = startIndex; i < endIndex; ++i) {
-      if (i >= a.length)
-        return H.ioore(a, i);
-      if (J.$eq(a[i], element))
-        return i;
-    }
-    return -1;
   },
   Symbol_getName: function(symbol) {
     return symbol.get$_name();
@@ -6619,7 +6596,7 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.156.157:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.156.187:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
@@ -6709,7 +6686,7 @@ var $$ = Object.create(null);
       if (this.dragged) {
         t1 = J.$add$ns(this.touched_x_offset, e.touchX);
         t2 = J.$add$ns(this.touched_y_offset, e.touchY);
-        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", " + H.S($.game.clientID));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", Client#" + H.S($.game.clientID));
       }
     },
     draw$1: function(ctx) {
@@ -6802,7 +6779,7 @@ var $$ = Object.create(null);
         if (1 >= t1)
           return H.ioore(temp, 1);
         if (!J.$eq(t2, temp[1])) {
-          t1 = new X.State(null, null, 0);
+          t1 = new X.State(null, null);
           t1.boxGame = this;
           t1.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
           this.myState = t1;
@@ -6821,7 +6798,7 @@ var $$ = Object.create(null);
       t1 = this.tmanager;
       t1.registerEvents$1(document.documentElement);
       t1.layers.push(this);
-      t1 = new X.State(null, null, 0);
+      t1 = new X.State(null, null);
       t1.boxGame = this;
       t1.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
       this.myState = t1;
@@ -6874,71 +6851,16 @@ var $$ = Object.create(null);
     }
   },
   State: {
-    "^": "Object;boxGame,myBoxes,lastLength",
+    "^": "Object;boxGame,myBoxes",
     updateBox$4: function(id, x, y, color) {
-      var myBoxesLength, myBoxesLengthSqrt, t1, t2, t3, found, box, t4, i, t5, t6, t7, temp;
-      myBoxesLength = this.myBoxes.length;
-      myBoxesLengthSqrt = C.JSDouble_methods.toInt$0(Math.sqrt(myBoxesLength));
-      if (myBoxesLengthSqrt * myBoxesLengthSqrt !== myBoxesLength)
-        ;
-      for (t1 = this.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null), t2 = J.getInterceptor(id), t3 = myBoxesLengthSqrt - 1, found = false; t1.moveNext$0();) {
+      var t1, t2, found, box, t3, temp;
+      for (t1 = this.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null), t2 = J.getInterceptor(id), found = false; t1.moveNext$0();) {
         box = t1._current;
-        t4 = J.getInterceptor$x(box);
-        if (t2.$eq(id, t4.get$id(box))) {
-          t4.set$x(box, x);
-          t4.set$y(box, y);
-          t4.set$color(box, color);
-          t4 = this.myBoxes;
-          i = H.Lists_indexOf(t4, box, 0, t4.length);
-          t4 = C.JSInt_methods.$mod(i, myBoxesLengthSqrt);
-          if (t4 === 0) {
-            t4 = this.myBoxes;
-            t5 = i + 1;
-            if (t5 < 0 || t5 >= t4.length)
-              return H.ioore(t4, t5);
-            box.rightBuddy = t4[t5];
-          } else {
-            t5 = this.myBoxes;
-            t6 = i - 1;
-            if (t4 === t3) {
-              if (t6 < 0 || t6 >= t5.length)
-                return H.ioore(t5, t6);
-              box.leftBuddy = t5[t6];
-            } else {
-              t4 = t5.length;
-              if (t6 < 0 || t6 >= t4)
-                return H.ioore(t5, t6);
-              box.leftBuddy = t5[t6];
-              t6 = i + 1;
-              if (t6 < 0 || t6 >= t4)
-                return H.ioore(t5, t6);
-              box.rightBuddy = t5[t6];
-            }
-            t4 = t5;
-          }
-          t5 = i / myBoxesLengthSqrt;
-          if (t5 < 1) {
-            t5 = i + myBoxesLengthSqrt;
-            if (t5 < 0 || t5 >= t4.length)
-              return H.ioore(t4, t5);
-            box.lowerBuddy = t4[t5];
-          } else {
-            t6 = i - myBoxesLengthSqrt;
-            if (t5 >= t3) {
-              if (t6 < 0 || t6 >= t4.length)
-                return H.ioore(t4, t6);
-              box.upperBuddy = t4[t6];
-            } else {
-              t5 = i + myBoxesLengthSqrt;
-              t7 = t4.length;
-              if (t5 < 0 || t5 >= t7)
-                return H.ioore(t4, t5);
-              box.lowerBuddy = t4[t5];
-              if (t6 < 0 || t6 >= t7)
-                return H.ioore(t4, t6);
-              box.upperBuddy = t4[t6];
-            }
-          }
+        t3 = J.getInterceptor$x(box);
+        if (t2.$eq(id, t3.get$id(box))) {
+          t3.set$x(box, x);
+          t3.set$y(box, y);
+          t3.set$color(box, color);
           found = true;
         }
       }
@@ -6948,7 +6870,6 @@ var $$ = Object.create(null);
         this.boxGame.touchables.push(temp);
         this.myBoxes.push(temp);
       }
-      this.lastLength = myBoxesLength;
     }
   },
   TouchManager: {
@@ -7459,7 +7380,6 @@ J.trim$0$s = function(receiver) {
   return J.getInterceptor$s(receiver).trim$0(receiver);
 };
 C.JSArray_methods = J.JSArray.prototype;
-C.JSDouble_methods = J.JSDouble.prototype;
 C.JSInt_methods = J.JSInt.prototype;
 C.JSNumber_methods = J.JSNumber.prototype;
 C.JSString_methods = J.JSString.prototype;
