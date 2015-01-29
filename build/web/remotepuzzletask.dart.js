@@ -494,11 +494,6 @@ var $$ = Object.create(null);
         throw H.wrapException(P.ArgumentError$(other));
       return receiver < other;
     },
-    $le: function(receiver, other) {
-      if (typeof other !== "number")
-        throw H.wrapException(P.ArgumentError$(other));
-      return receiver <= other;
-    },
     $ge: function(receiver, other) {
       if (typeof other !== "number")
         throw H.wrapException(P.ArgumentError$(other));
@@ -5159,7 +5154,7 @@ var $$ = Object.create(null);
   },
   "+double": 0,
   Duration: {
-    "^": "Object;_duration<",
+    "^": "Object;_duration",
     $add: function(_, other) {
       return P.Duration$(0, 0, C.JSInt_methods.$add(this._duration, other.get$_duration()), 0, 0, 0);
     },
@@ -5169,11 +5164,8 @@ var $$ = Object.create(null);
     $lt: function(_, other) {
       return C.JSInt_methods.$lt(this._duration, other.get$_duration());
     },
-    $le: function(_, other) {
-      return this._duration <= other.get$_duration();
-    },
     $ge: function(_, other) {
-      return this._duration >= other.get$_duration();
+      return C.JSInt_methods.$ge(this._duration, other.get$_duration());
     },
     $eq: function(_, other) {
       if (other == null)
@@ -6627,7 +6619,7 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.150.40:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.156.157:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
@@ -6701,7 +6693,7 @@ var $$ = Object.create(null);
       return true;
     },
     touchUp$1: function($event) {
-      var exception, exception0, t1, t2, t3;
+      var exception, exception0, t1;
       this.dragged = false;
       try {
       } catch (exception0) {
@@ -6710,180 +6702,14 @@ var $$ = Object.create(null);
         P.print(exception);
       }
 
-      t1 = this.img;
-      t2 = J.getInterceptor$x(t1);
-      this.imageWidth = t2.get$width(t1);
-      this.imageHeight = t2.get$height(t1);
-      t1 = this.rightBuddy;
-      if (t1 != null && this.rightNeighbor == null) {
-        t1 = J.$add$ns(t1.x, 10);
-        t2 = this.imageWidth;
-        if (typeof t2 !== "number")
-          return t2.$div();
-        if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.x)) {
-          t1 = J.$add$ns(this.rightBuddy.y, 10);
-          t2 = this.imageHeight;
-          if (typeof t2 !== "number")
-            return t2.$div();
-          if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.y)) {
-            t1 = J.$add$ns(this.rightBuddy.x, 10);
-            t2 = this.x;
-            t3 = this.imageWidth;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            if (J.$le$n(t1, J.$add$ns(J.$add$ns(t2, t3 / 2), 20))) {
-              t1 = J.$add$ns(this.rightBuddy.y, 10);
-              t2 = J.$add$ns(this.y, 20);
-              t3 = this.imageHeight;
-              if (typeof t3 !== "number")
-                return t3.$div();
-              t3 = J.$le$n(t1, J.$add$ns(t2, t3 / 2));
-              t1 = t3;
-            } else
-              t1 = false;
-          } else
-            t1 = false;
-        } else
-          t1 = false;
-        if (t1) {
-          t1 = this.rightBuddy;
-          this.rightNeighbor = t1;
-          t1.leftNeighbor = this;
-          P.print("rightneighbors!");
-          $.ws.send("n:" + H.S(this.id) + ",right," + H.S(this.rightNeighbor.id));
-        }
-      }
-      t1 = this.leftBuddy;
-      if (t1 != null && this.leftNeighbor == null) {
-        t1 = J.$add$ns(t1.x, 10);
-        t2 = this.imageWidth;
-        if (typeof t2 !== "number")
-          return t2.$div();
-        if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.x)) {
-          t1 = J.$add$ns(this.leftBuddy.y, 10);
-          t2 = this.imageHeight;
-          if (typeof t2 !== "number")
-            return t2.$div();
-          if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.y)) {
-            t1 = J.$add$ns(this.leftBuddy.x, 10);
-            t2 = J.$add$ns(this.x, 20);
-            t3 = this.imageWidth;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            if (J.$le$n(t1, J.$add$ns(t2, t3 / 2))) {
-              t1 = J.$add$ns(this.leftBuddy.y, 10);
-              t2 = J.$add$ns(this.y, 20);
-              t3 = this.imageHeight;
-              if (typeof t3 !== "number")
-                return t3.$div();
-              t3 = J.$le$n(t1, J.$add$ns(t2, t3 / 2));
-              t1 = t3;
-            } else
-              t1 = false;
-          } else
-            t1 = false;
-        } else
-          t1 = false;
-        if (t1) {
-          t1 = this.leftBuddy;
-          this.leftNeighbor = t1;
-          t1.rightNeighbor = this;
-          P.print("left neighbors!");
-          $.ws.send("n:" + H.S(this.id) + ",left," + H.S(this.leftNeighbor.id));
-        }
-      }
-      t1 = this.upperBuddy;
-      if (t1 != null && this.upperNeighbor == null) {
-        t1 = J.$add$ns(t1.x, 10);
-        t2 = this.imageWidth;
-        if (typeof t2 !== "number")
-          return t2.$div();
-        if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.x)) {
-          t1 = J.$add$ns(this.upperBuddy.y, 10);
-          t2 = this.imageHeight;
-          if (typeof t2 !== "number")
-            return t2.$div();
-          if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.y)) {
-            t1 = J.$add$ns(this.upperBuddy.x, 10);
-            t2 = J.$add$ns(this.x, 20);
-            t3 = this.imageWidth;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            if (J.$le$n(t1, J.$add$ns(t2, t3 / 2))) {
-              t1 = J.$add$ns(this.upperBuddy.y, 10);
-              t2 = J.$add$ns(this.y, 20);
-              t3 = this.imageHeight;
-              if (typeof t3 !== "number")
-                return t3.$div();
-              t3 = J.$le$n(t1, J.$add$ns(t2, t3 / 2));
-              t1 = t3;
-            } else
-              t1 = false;
-          } else
-            t1 = false;
-        } else
-          t1 = false;
-        if (t1) {
-          t1 = this.upperBuddy;
-          this.upperNeighbor = t1;
-          t1.lowerNeighbor = this;
-          P.print("upper neighbors!");
-          $.ws.send("n:" + H.S(this.id) + ",upper," + H.S(this.upperNeighbor.id));
-        }
-      }
-      t1 = this.lowerBuddy;
-      if (t1 != null && this.lowerNeighbor == null) {
-        t1 = J.$add$ns(t1.x, 10);
-        t2 = this.imageWidth;
-        if (typeof t2 !== "number")
-          return t2.$div();
-        if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.x)) {
-          t1 = J.$add$ns(this.lowerBuddy.y, 10);
-          t2 = this.imageHeight;
-          if (typeof t2 !== "number")
-            return t2.$div();
-          if (J.$ge$n(J.$add$ns(t1, t2 / 2), this.y)) {
-            t1 = J.$add$ns(this.lowerBuddy.x, 10);
-            t2 = J.$add$ns(this.x, 20);
-            t3 = this.imageWidth;
-            if (typeof t3 !== "number")
-              return t3.$div();
-            if (J.$le$n(t1, J.$add$ns(t2, t3 / 2))) {
-              t1 = J.$add$ns(this.lowerBuddy.y, 10);
-              t2 = J.$add$ns(this.y, 20);
-              t3 = this.imageHeight;
-              if (typeof t3 !== "number")
-                return t3.$div();
-              t3 = J.$le$n(t1, J.$add$ns(t2, t3 / 2));
-              t1 = t3;
-            } else
-              t1 = false;
-          } else
-            t1 = false;
-        } else
-          t1 = false;
-        if (t1) {
-          t1 = this.lowerBuddy;
-          this.lowerNeighbor = t1;
-          t1.upperNeighbor = this;
-          P.print("lower neighbors!");
-          $.ws.send("n:" + H.S(this.id) + ",lower," + H.S(this.lowerNeighbor.id));
-        }
-      }
       $.ws.send("b:" + H.S(this.id) + ", " + H.S(this.color) + ", " + H.S($.game.clientID));
     },
     touchDrag$1: function(e) {
-      var t1, t2, t3, t4, t5;
+      var t1, t2;
       if (this.dragged) {
         t1 = J.$add$ns(this.touched_x_offset, e.touchX);
         t2 = J.$add$ns(this.touched_y_offset, e.touchY);
-        t3 = this.rightNeighbor != null && this.leftNeighbor != null;
-        t4 = $.ws;
-        t5 = this.id;
-        if (t3)
-          t4.send("d:" + H.S(t5) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + "," + H.S(this.leftNeighbor.color) + "," + H.S(this.rightNeighbor.color) + ", Client#" + H.S($.game.clientID));
-        else
-          t4.send("d:" + H.S(t5) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", Client#" + H.S($.game.clientID));
+        $.ws.send("d:" + H.S(this.id) + "," + H.S(t1) + "," + H.S(t2) + "," + H.S(this.color) + ", " + H.S($.game.clientID));
       }
     },
     draw$1: function(ctx) {
@@ -7512,11 +7338,6 @@ J.$eq = function(receiver, a0) {
     return a0 != null && receiver === a0;
   return J.getInterceptor(receiver).$eq(receiver, a0);
 };
-J.$ge$n = function(receiver, a0) {
-  if (typeof receiver == "number" && typeof a0 == "number")
-    return receiver >= a0;
-  return J.getInterceptor$n(receiver).$ge(receiver, a0);
-};
 J.$index$asx = function(receiver, a0) {
   if (receiver.constructor == Array || typeof receiver == "string" || H.isJsIndexable(receiver, receiver[init.dispatchPropertyName]))
     if (a0 >>> 0 === a0 && a0 < receiver.length)
@@ -7527,11 +7348,6 @@ J.$indexSet$ax = function(receiver, a0, a1) {
   if ((receiver.constructor == Array || H.isJsIndexable(receiver, receiver[init.dispatchPropertyName])) && !receiver.immutable$list && a0 >>> 0 === a0 && a0 < receiver.length)
     return receiver[a0] = a1;
   return J.getInterceptor$ax(receiver).$indexSet(receiver, a0, a1);
-};
-J.$le$n = function(receiver, a0) {
-  if (typeof receiver == "number" && typeof a0 == "number")
-    return receiver <= a0;
-  return J.getInterceptor$n(receiver).$le(receiver, a0);
 };
 J.$lt$n = function(receiver, a0) {
   if (typeof receiver == "number" && typeof a0 == "number")

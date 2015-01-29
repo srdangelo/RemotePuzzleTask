@@ -22,7 +22,7 @@ void initWebSocket([int retrySeconds = 2]) {
   var reconnectScheduled = false;
 
   outputMsg("Connecting to websocket");
-  ws = new WebSocket('ws://10.101.150.40:4040/ws');
+  ws = new WebSocket('ws://10.101.156.157:4040/ws');
   //ws = new WebSocket('ws://127.0.0.1:4040/ws');
 
   void scheduleReconnect() {
