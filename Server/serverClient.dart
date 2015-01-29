@@ -24,7 +24,7 @@ class myClient {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
-      myState.myBoxes[num.parse(data[0])].pieceLocation();
+      myState.myBoxes[num.parse(data[0])-1].pieceLocation();
       logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
       //print (tempMsg);
     }

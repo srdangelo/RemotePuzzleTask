@@ -102,7 +102,7 @@ class Box{
               box.rightBuddy.x - imageWidth - box.x > -distance &&
               box.rightBuddy.y - box.y < distance &&
               box.rightBuddy.y - box.y > -distance &&
-              box.rightBuddy.dragged==true){
+              box.rightBuddy.dragged==true&&box.dragged==true){
              box.rightNeighbor = box.rightBuddy;
              box.rightBuddy.leftNeighbor = box;
              print ('right neighbors!');
@@ -115,7 +115,7 @@ class Box{
               box.leftBuddy.x + imageWidth - box.x > -distance &&
               box.leftBuddy.y - box.y < distance &&
               box.leftBuddy.y - box.y > -distance&&
-              box.leftBuddy.dragged==true){
+              box.leftBuddy.dragged==true&&box.dragged==true){
              box.leftNeighbor = box.leftBuddy;
              box.leftBuddy.rightNeighbor = box;
              print ('left neighbors!');
@@ -128,7 +128,7 @@ class Box{
               box.upperBuddy.x - box.x > -distance &&
               box.upperBuddy.y - imageWidth - box.y < distance &&
               box.upperBuddy.y - imageWidth - box.y > -distance&&
-              box.upperBuddy.dragged==true){
+              box.upperBuddy.dragged==true&&box.dragged==true){
              box.upperNeighbor = box.upperBuddy;
              box.upperBuddy.lowerNeighbor = box;
              print ('upper neighbors!');
@@ -141,7 +141,7 @@ class Box{
               box.lowerBuddy.x - box.x > -distance &&
               box.lowerBuddy.y + imageWidth - box.y < distance &&
               box.lowerBuddy.y + imageWidth - box.y > -distance&&
-              box.lowerBuddy.dragged==true){
+              box.lowerBuddy.dragged==true&&box.dragged==true){
              box.lowerNeighbor = box.lowerBuddy;
              box.lowerBuddy.upperNeighbor = box;
              print ('lower neighbors!');
