@@ -84,12 +84,14 @@ class State{
 
   //simple command to toggle the dragging interaction
   noDrag(num id){
-    for(Box box in myBoxes){
-      if(id == box.id){
-        box.dragged = false;
+    Box boxNolongerDragged=myBoxes[id-1];
+    for (Box box in myBoxes){        
+      if (box.getParent()==boxNolongerDragged.getParent()){
+        box.dragged=false;
       }
     }
-  }
+    return;
+}
 
   //if a object is dragged, this is called when the 'd' command is recieved
   updateBox(num id, num x, num y, String color){
@@ -225,5 +227,14 @@ class State{
     }
   }
         
-  
+  checkPieceLocation(num id){
+    Box boxDragged = myBoxes[id];
+    for (Box box in myBoxes){
+      if (box.getParent()==boxDragged.getParent()){
+        box.dragged=true;
+        box.pieceLocation();
+        
+      }
+    }
+  }
 }

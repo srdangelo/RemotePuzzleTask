@@ -79,10 +79,10 @@ class Box{
 
   }
   //return the root of the group to which box belongs
-  Box getParent(Box box){
-    if (box.parentGroup==null)
-      return box;
-    else return getParent(box.parentGroup);
+  Box getParent(){
+    if (this.parentGroup==null)
+      return this;
+    else return this.parentGroup.getParent();
   }
   
   void pieceLocation ()
