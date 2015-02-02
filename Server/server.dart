@@ -108,14 +108,14 @@ void main() {
   final PORT = 8084;
   
   //serve the test.html to port 8080
-  HttpServer.bind('10.101.156.187', 8084).then((server) {
+  HttpServer.bind(InternetAddress.ANY_IP_V4, 8084).then((server) {
   //HttpServer.bind('127.0.0.1', 8084).then((server) {
     server.listen(staticFiles.serveRequest);
   });
 
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('10.101.156.187', 4040).then((server) {
+    HttpServer.bind(InternetAddress.ANY_IP_V4, 4040).then((server) {
     //HttpServer.bind('127.0.0.1', 4040).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {
