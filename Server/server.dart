@@ -95,8 +95,8 @@ Trial trial;
 void main() {
 
   //server pathing
-  var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
-
+  //var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
+  var pathToBuild = "/Users/SESPWalkup/Documents/GitHub/RemotePuzzleTask/build/web";
   var staticFiles = new VirtualDirectory(pathToBuild);
   staticFiles.allowDirectoryListing = true;
   staticFiles.directoryHandler = (dir, request) {

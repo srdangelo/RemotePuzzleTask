@@ -23,7 +23,8 @@ class Game extends TouchLayer{
   TouchLayer tlayer = new TouchLayer();
 
   var score;
-  var phaseBreak;
+  var phaseBreak=true;
+  var phaseCongrats=false;
   var clientID;
   var trialNum;
   bool flagDraw = true;
@@ -65,18 +66,33 @@ class Game extends TouchLayer{
     if (flagDraw){
       clear();
       if (phaseBreak == 'false'){
-        ctx.fillStyle = 'white';
-        ctx.font = '30px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'center';
-        ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
-        ctx.fillText("Score: ${score}", 100, 100);
-        for(Box box in myState.myBoxes){
-          box.draw(ctx);
+        if (phaseCongrats=='true'){
+          ctx.fillStyle = 'white';
+          ctx.font = '30px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'center';
+          ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
+          ctx.fillText("Score: ${score}", 100, 100);
+          ctx.fillText("Congratuations! You have passed this stage. Please wait while we send you to the next stage.", 100, 150);
+          for(Box box in myState.myBoxes){
+            box.draw(ctx);
+          }
+          flagDraw = false;
         }
-      flagDraw = false;
+        else{
+          ctx.fillStyle = 'white';
+          ctx.font = '30px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'center';
+          ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
+          ctx.fillText("Score: ${score}", 100, 100);
+          for(Box box in myState.myBoxes){
+            box.draw(ctx);
+          }
+          flagDraw = false;          
+        }
       }
-      if (phaseBreak == 'true'){
+      else if (phaseBreak == 'true'){
         ctx.fillStyle = 'white';
         ctx.font = '30px sans-serif';
         ctx.textAlign = 'left';
@@ -112,7 +128,11 @@ class Game extends TouchLayer{
       score = data.substring(2);
     }
     if (data[0] == "p"){
-         phaseBreak = data.substring(2);
+      List<String> phaseData = data.substring(2).split(",");
+      if (phaseData.length>=2){
+         phaseBreak = phaseData[0];
+         phaseCongrats=phaseData[1];
+      }
     }
     if (data[0] == "i"){
       String tempMsg = data.substring(2);

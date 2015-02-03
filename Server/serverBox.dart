@@ -91,6 +91,7 @@ class Box{
     //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
     //checks for 2.
     {
+      var success=false;
       num distance = 20;
       Box box=this;
       imageWidth=100;
@@ -106,8 +107,10 @@ class Box{
              box.rightNeighbor = box.rightBuddy;
              box.rightBuddy.leftNeighbor = box;
              print ('right neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'right', box.rightNeighbor.id);
              myState.calculateScore();
+             
           }
         }
         if (box.leftBuddy != null && box.leftNeighbor==null){
@@ -119,6 +122,7 @@ class Box{
              box.leftNeighbor = box.leftBuddy;
              box.leftBuddy.rightNeighbor = box;
              print ('left neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'left', box.leftNeighbor.id);
              myState.calculateScore();
           }
@@ -132,6 +136,7 @@ class Box{
              box.upperNeighbor = box.upperBuddy;
              box.upperBuddy.lowerNeighbor = box;
              print ('upper neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'upper', box.upperNeighbor.id);
              myState.calculateScore();
           }
@@ -145,6 +150,7 @@ class Box{
              box.lowerNeighbor = box.lowerBuddy;
              box.lowerBuddy.upperNeighbor = box;
              print ('lower neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'lower', box.lowerNeighbor.id);
              myState.calculateScore();
           }

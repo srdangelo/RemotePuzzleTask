@@ -54,6 +54,8 @@ class _MimeMultipart extends MimeMultipart {
 
 class BoundMultipartStream {
    static const int _START = 0;
+   static const int _FIRST_BOUNDARY_ENDING = 111;
+   static const int _FIRST_BOUNDARY_END = 112;
    static const int _BOUNDARY_ENDING = 1;
    static const int _BOUNDARY_END = 2;
    static const int _HEADER_START = 3;
@@ -185,7 +187,7 @@ class BoundMultipartStream {
            if (byte == _boundary[_boundaryIndex]) {
              _boundaryIndex++;
              if (_boundaryIndex == _boundary.length) {
-               _state = _BOUNDARY_ENDING;
+               _state = _FIRST_BOUNDARY_ENDING;
                _boundaryIndex = 0;
              }
            } else {
@@ -193,6 +195,19 @@ class BoundMultipartStream {
              _index = _index - _boundaryIndex;
              _boundaryIndex = 0;
            }
+           break;
+
+         case _FIRST_BOUNDARY_ENDING:
+           if (byte == CharCode.CR) {
+             _state = _FIRST_BOUNDARY_END;
+           } else {
+             _expectWhitespace(byte);
+           }
+           break;
+
+         case _FIRST_BOUNDARY_END:
+           _expectByteValue(byte, CharCode.LF);
+           _state = _HEADER_START;
            break;
 
          case _BOUNDARY_ENDING:
@@ -207,10 +222,8 @@ class BoundMultipartStream {
 
          case _BOUNDARY_END:
            _expectByteValue(byte, CharCode.LF);
-           if (_multipartController != null) {
-             _multipartController.close();
-             _multipartController = null;
-           }
+           _multipartController.close();
+           _multipartController = null;
            _state = _HEADER_START;
            break;
 
@@ -332,10 +345,8 @@ class BoundMultipartStream {
 
          case _LAST_BOUNDARY_END:
            _expectByteValue(byte, CharCode.LF);
-           if (_multipartController != null) {
-             _multipartController.close();
-             _multipartController = null;
-           }
+           _multipartController.close();
+           _multipartController = null;
            _state = _DONE;
            break;
 

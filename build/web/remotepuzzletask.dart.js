@@ -6596,7 +6596,7 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.156.187:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.151.194:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
@@ -6623,7 +6623,7 @@ var $$ = Object.create(null);
     t3 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
     t4 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
     t4.enabled = true;
-    t4 = new X.Game(null, t1, null, null, null, null, null, new X.TouchManager(false, null, t2, t3), t4, null, null, null, null, true, H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
+    t4 = new X.Game(null, t1, null, null, null, null, null, new X.TouchManager(false, null, t2, t3), t4, null, true, false, null, null, true, H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
     t4.enabled = true;
     t4.Game$0();
     $.game = t4;
@@ -6711,29 +6711,44 @@ var $$ = Object.create(null);
     }
   },
   Game: {
-    "^": "TouchLayer;canvas,img,ctx,width,height,myState,box,tmanager,tlayer,score,phaseBreak,clientID,trialNum,flagDraw,touchables,touch_bindings,enabled",
+    "^": "TouchLayer;canvas,img,ctx,width,height,myState,box,tmanager,tlayer,score,phaseBreak,phaseCongrats,clientID,trialNum,flagDraw,touchables,touch_bindings,enabled",
     animate$1: [function(_, i) {
       C.Window_methods.get$animationFrame(window).then$1(this.get$animate(this));
       this.draw$0();
     }, "call$1", "get$animate", 2, 0, 21],
     draw$0: function() {
+      var t1, t2;
       if (this.flagDraw) {
         J.save$0$x(this.ctx);
         J.setTransform$6$x(this.ctx, 1, 0, 0, 1, 0, 0);
         J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
         J.restore$0$x(this.ctx);
-        if (this.phaseBreak === "false") {
-          J.set$fillStyle$x(this.ctx, "white");
-          J.set$font$x(this.ctx, "30px sans-serif");
-          J.set$textAlign$x(this.ctx, "left");
-          J.set$textBaseline$x(this.ctx, "center");
-          J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
-          J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
-          for (var t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-            t1._current.draw$1(this.ctx);
-          this.flagDraw = false;
-        }
-        if (this.phaseBreak === "true") {
+        if (J.$eq(this.phaseBreak, "false")) {
+          t1 = J.$eq(this.phaseCongrats, "true");
+          t2 = this.ctx;
+          if (t1) {
+            J.set$fillStyle$x(t2, "white");
+            J.set$font$x(this.ctx, "30px sans-serif");
+            J.set$textAlign$x(this.ctx, "left");
+            J.set$textBaseline$x(this.ctx, "center");
+            J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+            J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
+            J.fillText$3$x(this.ctx, "Congratuations! You have passed this stage. Please wait while we send you to the next stage.", 100, 150);
+            for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
+              t1._current.draw$1(this.ctx);
+            this.flagDraw = false;
+          } else {
+            J.set$fillStyle$x(t2, "white");
+            J.set$font$x(this.ctx, "30px sans-serif");
+            J.set$textAlign$x(this.ctx, "left");
+            J.set$textBaseline$x(this.ctx, "center");
+            J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+            J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
+            for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
+              t1._current.draw$1(this.ctx);
+            this.flagDraw = false;
+          }
+        } else if (J.$eq(this.phaseBreak, "true")) {
           J.set$fillStyle$x(this.ctx, "white");
           J.set$font$x(this.ctx, "30px sans-serif");
           J.set$textAlign$x(this.ctx, "left");
@@ -6743,7 +6758,7 @@ var $$ = Object.create(null);
       }
     },
     handleMsg$1: function(data) {
-      var t1, objectsData, t2, data0, t3, t4, t5, t6, temp;
+      var t1, objectsData, t2, data0, t3, t4, t5, t6, phaseData, temp;
       this.flagDraw = true;
       t1 = J.getInterceptor$asx(data);
       if (J.$eq(t1.$index(data, 0), "u")) {
@@ -6767,8 +6782,13 @@ var $$ = Object.create(null);
       }
       if (J.$eq(t1.$index(data, 0), "s"))
         this.score = t1.substring$1(data, 2);
-      if (J.$eq(t1.$index(data, 0), "p"))
-        this.phaseBreak = t1.substring$1(data, 2);
+      if (J.$eq(t1.$index(data, 0), "p")) {
+        phaseData = t1.substring$1(data, 2).split(",");
+        if (phaseData.length >= 2) {
+          this.phaseBreak = phaseData[0];
+          this.phaseCongrats = phaseData[1];
+        }
+      }
       if (J.$eq(t1.$index(data, 0), "i")) {
         temp = t1.substring$1(data, 2).split(",");
         t1 = temp.length;

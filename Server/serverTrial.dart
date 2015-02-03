@@ -4,6 +4,7 @@ class Trial{
   var phase = 'Start';
   num trialNum = 0;
   bool phaseBreak = true;
+  bool phaseCongrats=false;
   num trialID = 0;
 
 Trial () {
@@ -49,17 +50,36 @@ Trial () {
               break;
           case 'BREAK':
               phase = 'TRIAL';
+              phaseCongrats=false;
               phaseBreak = true;
               setup([]);
               new Timer(const Duration(seconds : 10), () {
                                 transition();
               });
+              myState.score=100;
+              var sendScore = "s: ${myState.score} \n";
+              distributeMessage(sendScore);
               break;
           case 'TRIAL':
-              phase = 'BREAK';
+              phase = 'CONGRATS';
               phaseBreak = false;
               setup(order[trialNum]);
               trialNum += 1;
+              break;
+          case 'CONGRATS':
+              phase='BREAK';
+              var Score=myState.score;//Need to store the score to show that on the Congrats page.
+              setup([]);
+              myState.score=Score;//Restore the score.
+              var sendScore = "s: ${myState.score} \n";
+                            distributeMessage(sendScore);
+              phaseBreak=false;
+              phaseCongrats=true;
+              
+              new Timer(const Duration(seconds : 10), () {
+                                              transition();
+              });
+              
               break;
            case 'BREAK':
               phaseBreak = true;
