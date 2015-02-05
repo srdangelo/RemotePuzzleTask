@@ -34,9 +34,36 @@ class WindowsStyle extends InternalStyle {
     return !isSeparator(path.codeUnitAt(path.length - 1));
   }
 
+<<<<<<< Updated upstream
   String getRoot(String path) {
     var root = _getRoot(path);
     return root == null ? getRelativeRoot(path) : root;
+=======
+  int rootLength(String path) {
+    if (path.isEmpty) return 0;
+    if (path.codeUnitAt(0) == chars.SLASH) return 1;
+    if (path.codeUnitAt(0) == chars.BACKSLASH) {
+      if (path.length < 2 || path.codeUnitAt(1) != chars.BACKSLASH) return 1;
+      // The path is a network share. Search for up to two '\'s, as they are
+      // the server and share - and part of the root part.
+      var index = path.indexOf('\\', 2);
+      if (index > 0) {
+        index = path.indexOf('\\', index + 1);
+        if (index > 0) return index;
+      }
+      return path.length;
+    }
+    // If the path is of the form 'C:/' or 'C:\', with C being any letter, it's
+    // a root part.
+    if (path.length < 3) return 0;
+    // Check for the letter.
+    if (!isAlphabetic(path.codeUnitAt(0))) return 0;
+    // Check for the ':'.
+    if (path.codeUnitAt(1) != chars.COLON) return 0;
+    // Check for either '/' or '\'.
+    if (!isSeparator(path.codeUnitAt(2))) return 0;
+    return 3;
+>>>>>>> Stashed changes
   }
 
   String getRelativeRoot(String path) {
@@ -79,8 +106,8 @@ class WindowsStyle extends InternalStyle {
         parsed.parts.add("");
       }
 
-      return new Uri(scheme: 'file', host: rootParts.first,
-          pathSegments: parsed.parts);
+      return new Uri(
+          scheme: 'file', host: rootParts.first, pathSegments: parsed.parts);
     } else {
       // Drive-letter paths become "file:///C:/path/to/file".
 
@@ -94,8 +121,8 @@ class WindowsStyle extends InternalStyle {
 
       // Get rid of the trailing "\" in "C:\" because the URI constructor will
       // add a separator on its own.
-      parsed.parts.insert(0,
-          parsed.root.replaceAll("/", "").replaceAll("\\", ""));
+      parsed.parts.insert(
+          0, parsed.root.replaceAll("/", "").replaceAll("\\", ""));
 
       return new Uri(scheme: 'file', pathSegments: parsed.parts);
     }
