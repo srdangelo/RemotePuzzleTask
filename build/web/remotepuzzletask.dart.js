@@ -1074,7 +1074,7 @@ var $$ = Object.create(null);
       if (t1 != null)
         t1.clear$0(0);
       for (t1 = this.ports, t2 = t1.get$values(t1), t3 = t2._iterable, t2 = H.setRuntimeTypeInfo(new H.MappedIterator(null, t3.get$iterator(t3), t2._f), [H.getTypeArgumentByIndex(t2, 0), H.getTypeArgumentByIndex(t2, 1)]); t2.moveNext$0();)
-        t2._current._close$0();
+        t2.__internal$_current._close$0();
       t1.clear$0(0);
       this.weakPorts.clear$0(0);
       init.globalState.isolates.remove$1(0, this.id);
@@ -1082,7 +1082,7 @@ var $$ = Object.create(null);
       t1 = this.doneHandlers;
       if (t1 != null) {
         for (t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-          J.send$1$x(t1._current, null);
+          J.send$1$x(t1.__internal$_current, null);
         this.doneHandlers = null;
       }
     }, "call$0", "get$kill", 0, 0, 2]
@@ -2768,7 +2768,7 @@ var $$ = Object.create(null);
     "^": "Closure;"
   },
   BoundClosure: {
-    "^": "TearOffClosure;_self,_target,_receiver,__js_helper$_name",
+    "^": "TearOffClosure;_self,__js_helper$_target,_receiver,__js_helper$_name",
     $eq: function(_, other) {
       if (other == null)
         return false;
@@ -2776,7 +2776,7 @@ var $$ = Object.create(null);
         return true;
       if (!J.getInterceptor(other).$isBoundClosure)
         return false;
-      return this._self === other._self && this._target === other._target && this._receiver === other._receiver;
+      return this._self === other._self && this.__js_helper$_target === other.__js_helper$_target && this._receiver === other._receiver;
     },
     get$hashCode: function(_) {
       var t1, receiverHashCode;
@@ -2785,7 +2785,7 @@ var $$ = Object.create(null);
         receiverHashCode = H.Primitives_objectHashCode(this._self);
       else
         receiverHashCode = typeof t1 !== "object" ? J.get$hashCode$(t1) : H.Primitives_objectHashCode(t1);
-      t1 = H.Primitives_objectHashCode(this._target);
+      t1 = H.Primitives_objectHashCode(this.__js_helper$_target);
       if (typeof receiverHashCode !== "number")
         return receiverHashCode.$xor();
       return (receiverHashCode ^ t1) >>> 0;
@@ -2982,9 +2982,9 @@ var $$ = Object.create(null);
     return symbol.get$_name();
   },
   ListIterator: {
-    "^": "Object;_iterable,__internal$_length,_index,_current",
+    "^": "Object;_iterable,__internal$_length,_index,__internal$_current",
     get$current: function() {
-      return this._current;
+      return this.__internal$_current;
     },
     moveNext$0: function() {
       var t1, t2, $length, t3;
@@ -2995,10 +2995,10 @@ var $$ = Object.create(null);
         throw H.wrapException(P.ConcurrentModificationError$(t1));
       t3 = this._index;
       if (t3 >= $length) {
-        this._current = null;
+        this.__internal$_current = null;
         return false;
       }
-      this._current = t2.elementAt$1(t1, t3);
+      this.__internal$_current = t2.elementAt$1(t1, t3);
       ++this._index;
       return true;
     }
@@ -3026,21 +3026,21 @@ var $$ = Object.create(null);
     "^": "MappedIterable;_iterable,_f"
   },
   MappedIterator: {
-    "^": "Iterator;_current,_iterator,_f",
+    "^": "Iterator;__internal$_current,_iterator,_f",
     _f$1: function(arg0) {
       return this._f.call$1(arg0);
     },
     moveNext$0: function() {
       var t1 = this._iterator;
       if (t1.moveNext$0()) {
-        this._current = this._f$1(t1.get$current());
+        this.__internal$_current = this._f$1(t1.get$current());
         return true;
       }
-      this._current = null;
+      this.__internal$_current = null;
       return false;
     },
     get$current: function() {
-      return this._current;
+      return this.__internal$_current;
     }
   },
   FixedLengthListMixin: {
@@ -5476,7 +5476,7 @@ var $$ = Object.create(null);
   "^": "",
   HtmlElement: {
     "^": "Element;",
-    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLButtonElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMenuItemElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPictureElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLShadowElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTextAreaElement|HTMLTitleElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
+    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMenuItemElement|HTMLMetaElement|HTMLModElement|HTMLOListElement|HTMLOptGroupElement|HTMLParagraphElement|HTMLPictureElement|HTMLPreElement|HTMLQuoteElement|HTMLShadowElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTitleElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
   },
   AnchorElement: {
     "^": "HtmlElement;",
@@ -5500,6 +5500,10 @@ var $$ = Object.create(null);
     "^": "HtmlElement;",
     $isEventTarget: true,
     "%": "HTMLBodyElement"
+  },
+  ButtonElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLButtonElement"
   },
   CanvasElement: {
     "^": "HtmlElement;height=,width=",
@@ -5608,6 +5612,9 @@ var $$ = Object.create(null);
     getBoundingClientRect$0: function(receiver) {
       return receiver.getBoundingClientRect();
     },
+    get$onClick: function(receiver) {
+      return H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(receiver, "click", false), [null]);
+    },
     get$onMouseDown: function(receiver) {
       return H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(receiver, "mousedown", false), [null]);
     },
@@ -5660,10 +5667,14 @@ var $$ = Object.create(null);
     "%": "HTMLImageElement"
   },
   InputElement: {
-    "^": "HtmlElement;height=,src},width=",
+    "^": "HtmlElement;height=,src},value=,width=",
     $isElement: true,
     $isEventTarget: true,
     "%": "HTMLInputElement"
+  },
+  LIElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLLIElement"
   },
   MediaElement: {
     "^": "HtmlElement;error=,src}",
@@ -5679,6 +5690,10 @@ var $$ = Object.create(null);
       return P.convertNativeToDart_AcceptStructuredClone(receiver.data, true);
     },
     "%": "MessageEvent"
+  },
+  MeterElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLMeterElement"
   },
   MidiMessageEvent: {
     "^": "Event;data=",
@@ -5712,6 +5727,22 @@ var $$ = Object.create(null);
     "^": "HtmlElement;data=,height=,width=",
     "%": "HTMLObjectElement"
   },
+  OptionElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLOptionElement"
+  },
+  OutputElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLOutputElement"
+  },
+  ParamElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLParamElement"
+  },
+  ProgressElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLProgressElement"
+  },
   PushEvent: {
     "^": "Event;data=",
     "%": "PushEvent"
@@ -5721,7 +5752,7 @@ var $$ = Object.create(null);
     "%": "HTMLScriptElement"
   },
   SelectElement: {
-    "^": "HtmlElement;length=",
+    "^": "HtmlElement;length=,value=",
     "%": "HTMLSelectElement"
   },
   SourceElement: {
@@ -5731,6 +5762,10 @@ var $$ = Object.create(null);
   SpeechRecognitionError: {
     "^": "Event;error=",
     "%": "SpeechRecognitionError"
+  },
+  TextAreaElement: {
+    "^": "HtmlElement;value=",
+    "%": "HTMLTextAreaElement"
   },
   TextEvent: {
     "^": "UIEvent;data=",
@@ -5954,24 +5989,24 @@ var $$ = Object.create(null);
     }
   },
   _EventStream: {
-    "^": "Stream;_html$_target,_eventType,_useCapture",
+    "^": "Stream;_target,_eventType,_useCapture",
     listen$4$cancelOnError$onDone$onError: function(onData, cancelOnError, onDone, onError) {
-      var t1 = new W._EventStreamSubscription(0, this._html$_target, this._eventType, W._wrapZone(onData), this._useCapture);
+      var t1 = new W._EventStreamSubscription(0, this._target, this._eventType, W._wrapZone(onData), this._useCapture);
       t1.$builtinTypeInfo = this.$builtinTypeInfo;
       t1._tryResume$0();
       return t1;
     }
   },
   _ElementEventStreamImpl: {
-    "^": "_EventStream;_html$_target,_eventType,_useCapture"
+    "^": "_EventStream;_target,_eventType,_useCapture"
   },
   _EventStreamSubscription: {
-    "^": "StreamSubscription;_pauseCount,_html$_target,_eventType,_onData,_useCapture",
+    "^": "StreamSubscription;_pauseCount,_target,_eventType,_onData,_useCapture",
     cancel$0: function(_) {
-      if (this._html$_target == null)
+      if (this._target == null)
         return;
       this._unlisten$0();
-      this._html$_target = null;
+      this._target = null;
       this._onData = null;
       return;
     },
@@ -5980,7 +6015,7 @@ var $$ = Object.create(null);
       t1 = this._onData;
       t2 = t1 != null;
       if (t2 && this._pauseCount <= 0) {
-        t3 = this._html$_target;
+        t3 = this._target;
         t3.toString;
         if (t2)
           J._addEventListener$3$x(t3, this._eventType, t1, this._useCapture);
@@ -5991,7 +6026,7 @@ var $$ = Object.create(null);
       t1 = this._onData;
       t2 = t1 != null;
       if (t2) {
-        t3 = this._html$_target;
+        t3 = this._target;
         t3.toString;
         if (t2)
           J._removeEventListener$3$x(t3, this._eventType, t1, this._useCapture);
@@ -6007,22 +6042,22 @@ var $$ = Object.create(null);
     $asList: null
   },
   FixedSizeListIterator: {
-    "^": "Object;_array,_length,_position,_html$_current",
+    "^": "Object;_array,_length,_position,_current",
     moveNext$0: function() {
       var nextPosition, t1;
       nextPosition = this._position + 1;
       t1 = this._length;
       if (nextPosition < t1) {
-        this._html$_current = J.$index$asx(this._array, nextPosition);
+        this._current = J.$index$asx(this._array, nextPosition);
         this._position = nextPosition;
         return true;
       }
-      this._html$_current = null;
+      this._current = null;
       this._position = t1;
       return false;
     },
     get$current: function() {
-      return this._html$_current;
+      return this._current;
     }
   },
   _DOMWindowCrossFrame: {
@@ -6136,6 +6171,9 @@ var $$ = Object.create(null);
   },
   SvgElement: {
     "^": "Element;",
+    get$onClick: function(receiver) {
+      return H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(receiver, "click", false), [null]);
+    },
     get$onMouseDown: function(receiver) {
       return H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(receiver, "mousedown", false), [null]);
     },
@@ -6563,7 +6601,7 @@ var $$ = Object.create(null);
         copy = P.LinkedHashMap_LinkedHashMap$_empty(null, null);
         this.writeSlot_7.call$2(slot, copy);
         for (t1 = Object.keys(e), t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
-          key = t1._current;
+          key = t1.__internal$_current;
           copy.$indexSet(0, key, this.call$1(e[key]));
         }
         return copy;
@@ -6596,23 +6634,23 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.151.194:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.150.109:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "close", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure0(retrySeconds, t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure0(retrySeconds, t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "error", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure1(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure1(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "message", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure2()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure2()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
   },
   main: [function() {
     var t1, t2, t3, t4;
@@ -6627,6 +6665,8 @@ var $$ = Object.create(null);
     t4.enabled = true;
     t4.Game$0();
     $.game = t4;
+    t4 = J.get$onClick$x(document.querySelector("#submit"));
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t4._target, t4._eventType, W._wrapZone(new X.main_closure()), t4._useCapture), [H.getTypeArgumentByIndex(t4, 0)])._tryResume$0();
   }, "call$0", "main$closure", 0, 0, 2],
   Box: {
     "^": "Object;x',y',color',id>,dragged,imageWidth,imageHeight,touched_x_offset,touched_y_offset,img,rightBuddy,leftBuddy,upperBuddy,lowerBuddy,leftNeighbor,rightNeighbor,upperNeighbor,lowerNeighbor,dragTimer",
@@ -6735,7 +6775,7 @@ var $$ = Object.create(null);
             J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
             J.fillText$3$x(this.ctx, "Congratuations! You have passed this stage. Please wait while we send you to the next stage.", 100, 150);
             for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-              t1._current.draw$1(this.ctx);
+              t1.__internal$_current.draw$1(this.ctx);
             this.flagDraw = false;
           } else {
             J.set$fillStyle$x(t2, "white");
@@ -6745,7 +6785,7 @@ var $$ = Object.create(null);
             J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
             J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
             for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-              t1._current.draw$1(this.ctx);
+              t1.__internal$_current.draw$1(this.ctx);
             this.flagDraw = false;
           }
         } else if (J.$eq(this.phaseBreak, "true")) {
@@ -6764,7 +6804,7 @@ var $$ = Object.create(null);
       if (J.$eq(t1.$index(data, 0), "u")) {
         objectsData = t1.substring$1(data, 2).split(";");
         for (t2 = new H.ListIterator(objectsData, objectsData.length, 0, null); t2.moveNext$0();) {
-          data0 = J.split$1$s(t2._current, ",");
+          data0 = J.split$1$s(t2.__internal$_current, ",");
           if (data0.length > 3) {
             t3 = this.myState;
             t4 = P.num_parse(data0[0], null);
@@ -6870,12 +6910,23 @@ var $$ = Object.create(null);
       $.game.handleMsg$1(J.get$data$x(e));
     }
   },
+  main_closure: {
+    "^": "Closure:7;",
+    call$1: function($event) {
+      var level;
+      J.preventDefault$0$x($event);
+      level = document.querySelector("#level");
+      $.ws.send("s:" + H.S(J.get$value$x(level)));
+      P.print("Sent form");
+      return;
+    }
+  },
   State: {
     "^": "Object;boxGame,myBoxes",
     updateBox$4: function(id, x, y, color) {
       var t1, t2, found, box, t3, temp;
       for (t1 = this.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null), t2 = J.getInterceptor(id), found = false; t1.moveNext$0();) {
-        box = t1._current;
+        box = t1.__internal$_current;
         t3 = J.getInterceptor$x(box);
         if (t2.$eq(id, t3.get$id(box))) {
           t3.set$x(box, x);
@@ -6913,19 +6964,19 @@ var $$ = Object.create(null);
       this.parent = element;
       t1 = J.getInterceptor$x(element);
       t2 = t1.get$onMouseDown(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
       t2 = t1.get$onMouseUp(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure0(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure0(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
       t1 = t1.get$onMouseMove(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure1(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure1(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchstart", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure2(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure2(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchmove", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure3(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure3(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchend", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure4(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure4(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._EventStream(document, "touchmove", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure5()), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure5()), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
     },
     _touchUp$1: function(evt) {
       var t, t1, target, touchExists, i;
@@ -7155,12 +7206,6 @@ $$ = null;
   _.$isMessageEvent = TRUE;
   _.$isObject = TRUE;
   P.Object.$isObject = TRUE;
-  _ = W.AnimationPlayer;
-  _.$isAnimationPlayer = TRUE;
-  _.$isObject = TRUE;
-  _ = P.AsyncError;
-  _.$isAsyncError = TRUE;
-  _.$isObject = TRUE;
   _ = P._EventSink;
   _.$is_EventSink = TRUE;
   _.$isObject = TRUE;
@@ -7173,11 +7218,17 @@ $$ = null;
   _ = P._DelayedEvent;
   _.$is_DelayedEvent = TRUE;
   _.$isObject = TRUE;
+  _ = P.StreamSubscription;
+  _.$isStreamSubscription = TRUE;
+  _.$isObject = TRUE;
+  _ = P.AsyncError;
+  _.$isAsyncError = TRUE;
+  _.$isObject = TRUE;
   _ = P.DateTime;
   _.$isDateTime = TRUE;
   _.$isObject = TRUE;
-  _ = P.StreamSubscription;
-  _.$isStreamSubscription = TRUE;
+  _ = W.AnimationPlayer;
+  _.$isAnimationPlayer = TRUE;
   _.$isObject = TRUE;
   _ = P.Function;
   _.$isFunction = TRUE;
@@ -7339,11 +7390,17 @@ J.get$iterator$ax = function(receiver) {
 J.get$length$asx = function(receiver) {
   return J.getInterceptor$asx(receiver).get$length(receiver);
 };
+J.get$onClick$x = function(receiver) {
+  return J.getInterceptor$x(receiver).get$onClick(receiver);
+};
 J.get$topLeft$x = function(receiver) {
   return J.getInterceptor$x(receiver).get$topLeft(receiver);
 };
 J.get$touches$x = function(receiver) {
   return J.getInterceptor$x(receiver).get$touches(receiver);
+};
+J.get$value$x = function(receiver) {
+  return J.getInterceptor$x(receiver).get$value(receiver);
 };
 J.get$width$x = function(receiver) {
   return J.getInterceptor$x(receiver).get$width(receiver);

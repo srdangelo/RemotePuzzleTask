@@ -50,6 +50,18 @@ class myClient {
       myState.noDrag(num.parse(data[0]));
       
     }
+    else if (msg[0]=="s")//the client sent the stage to which they want to begin with
+      {
+      String tempMsg = msg.substring(2);
+      List<String> data = tempMsg.split(",");
+            
+      trial.phase = 'CONGRATS';
+      trial.phaseBreak = false;
+      trial.phaseCongrats=false;
+      trial.trialNum=num.parse(data[0])-1;
+      trial.setup(trial.order[trial.trialNum]);
+      trial.trialNum += 1;
+    }
 
   }
 
