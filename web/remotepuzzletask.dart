@@ -25,11 +25,7 @@ void initWebSocket([int retrySeconds = 2]) {
   final PORT = 8084;
   //ws = new WebSocket('ws://'+'10.101.150.184'+':'+PORT.toString()+'/ws');
   //ws = new WebSocket('ws://127.0.0.1:4040/ws');
-<<<<<<< Updated upstream
   ws = new WebSocket('ws://10.101.150.109:4040/ws');
-=======
-  ws = new WebSocket('ws://10.101.156.8:4040/ws');
->>>>>>> Stashed changes
   void scheduleReconnect() {
     if (!reconnectScheduled) {
       new Timer(new Duration(milliseconds: 1000 * retrySeconds), () => initWebSocket(retrySeconds * 2));
