@@ -54,15 +54,25 @@ class myClient {
       {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
-            
-      trial.phase = 'CONGRATS';
-      trial.phaseBreak = false;
-      trial.phaseCongrats=false;
-      trial.trialNum=num.parse(data[0])-1;
-      trial.setup(trial.order[trial.trialNum]);
-      trial.trialNum += 1;
+      
+      if (num.parse(data[0])-1>=trial.order.length)
+      {
+        print('Number entered is too large');
+        trial.phaseStarted=true;
+        trial.phaseEnd=true;
+        trial.phase='END';
+        trial.transition();
+      }
+      else{
+        trial.setup([]);      
+        trial.phase = 'BREAK';
+        trial.phaseStarted=true;
+        trial.phaseBreak = true;
+        trial.phaseCongrats=false;
+        trial.trialNum=num.parse(data[0])-1;
+        trial.transition();
+      }
     }
-
   }
 
   void errorHandler(error){

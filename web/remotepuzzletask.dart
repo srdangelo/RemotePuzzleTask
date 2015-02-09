@@ -25,7 +25,7 @@ void initWebSocket([int retrySeconds = 2]) {
   final PORT = 8084;
   //ws = new WebSocket('ws://'+'10.101.150.184'+':'+PORT.toString()+'/ws');
   //ws = new WebSocket('ws://127.0.0.1:4040/ws');
-  ws = new WebSocket('ws://10.101.150.109:4040/ws');
+  ws = new WebSocket('ws://10.101.151.152:4040/ws');
   void scheduleReconnect() {
     if (!reconnectScheduled) {
       new Timer(new Duration(milliseconds: 1000 * retrySeconds), () => initWebSocket(retrySeconds * 2));
@@ -63,19 +63,10 @@ void main() {
   print("started");
   initWebSocket();
   game = new Game();
-  InputElement submit=querySelector('#submit');
-  submit.onClick.listen((event)=>submitForm(event));
 }
 
 void repaint() {
   game.draw();
-}
-
-void submitForm(Event e){
-  e.preventDefault();
-  InputElement level=querySelector('#level');
-  ws.send("s:${(level.value)}");
-  print("Sent form");
 }
 
 var imageWidth;

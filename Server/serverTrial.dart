@@ -3,8 +3,10 @@ part of simple_http_server;
 class Trial{
   var phase = 'Start';
   num trialNum = 0;
-  bool phaseBreak = true;
+  bool phaseStarted=false;
+  bool phaseBreak = false;
   bool phaseCongrats=false;
+  bool phaseEnd=false;
   num trialID = 0;
   List<String> order = [
                              ['Octopus_07', 'Octopus_08', 'Octopus_09', 'Octopus_04', 'Octopus_05', 'Octopus_06', 'Octopus_01', 'Octopus_02', 'Octopus_03'],
@@ -16,6 +18,11 @@ class Trial{
                              ['plaid1', 'plaid2', 'plaid3', 'plaid4', 'plaid5', 'plaid6', 'plaid7', 'plaid8', 'plaid9'],
                              ['green_07', 'green_08', 'green_09', 'green_04', 'green_05', 'green_06', 'green_01', 'green_02', 'green_03'],
                              ['redplaid_01', 'redplaid_02', 'redplaid_03', 'redplaid_04', 'redplaid_05', 'redplaid_06', 'redplaid_07', 'redplaid_08', 'redplaid_09'],
+                             ['world_21','world_22','world_23','world_24','world_25',
+                              'world_16','world_17','world_18','world_19','world_20',
+                              'world_11','world_12','world_13','world_14','world_15',
+                              'world_06','world_07','world_08','world_09','world_10',
+                              'world_01','world_02','world_03','world_04','world_05']
                              ];
 Trial () {
  transition();
@@ -42,14 +49,14 @@ Trial () {
      switch(phase){
           case 'Start':
               phase = 'BREAK';
+              phaseStarted=false;
               phaseBreak = true;
               setup([]);
-              new Timer(const Duration(seconds : 10), () {
-                 transition();
-              });
+              
               break;
           case 'BREAK':
               phase = 'TRIAL';
+              phaseStarted=true;
               phaseCongrats=false;
               phaseBreak = true;
               setup([]);
@@ -65,6 +72,14 @@ Trial () {
               phaseBreak = false;
               setup(order[trialNum]);
               trialNum += 1;
+              if ((trialNum)==order.length){
+                phase='END';
+              }
+              else if (trialNum>order.length){
+                phase='END';
+                transition();
+              }
+                
               break;
           case 'CONGRATS':
               phase='BREAK';
@@ -81,8 +96,9 @@ Trial () {
               });
               
               break;
-           case 'BREAK':
-              phaseBreak = true;
+           case 'END':
+              phaseEnd=true;
+              setup([]);
               break;
            }
       

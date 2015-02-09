@@ -553,6 +553,16 @@ var $$ = Object.create(null);
         return result;
       return result.substring(startIndex, endIndex0);
     },
+    indexOf$2: function(receiver, pattern, start) {
+      if (start < 0 || start > receiver.length)
+        throw H.wrapException(P.RangeError$range(start, 0, receiver.length, null, null));
+      return receiver.indexOf(pattern, start);
+    },
+    contains$2: function(receiver, other, startIndex) {
+      if (startIndex > receiver.length)
+        throw H.wrapException(P.RangeError$range(startIndex, 0, receiver.length, null, null));
+      return H.stringContainsUnchecked(receiver, other, startIndex);
+    },
     get$isEmpty: function(receiver) {
       return receiver.length === 0;
     },
@@ -1074,7 +1084,7 @@ var $$ = Object.create(null);
       if (t1 != null)
         t1.clear$0(0);
       for (t1 = this.ports, t2 = t1.get$values(t1), t3 = t2._iterable, t2 = H.setRuntimeTypeInfo(new H.MappedIterator(null, t3.get$iterator(t3), t2._f), [H.getTypeArgumentByIndex(t2, 0), H.getTypeArgumentByIndex(t2, 1)]); t2.moveNext$0();)
-        t2.__internal$_current._close$0();
+        t2._current._close$0();
       t1.clear$0(0);
       this.weakPorts.clear$0(0);
       init.globalState.isolates.remove$1(0, this.id);
@@ -1082,7 +1092,7 @@ var $$ = Object.create(null);
       t1 = this.doneHandlers;
       if (t1 != null) {
         for (t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-          J.send$1$x(t1.__internal$_current, null);
+          J.send$1$x(t1._current, null);
         this.doneHandlers = null;
       }
     }, "call$0", "get$kill", 0, 0, 2]
@@ -1480,19 +1490,17 @@ var $$ = Object.create(null);
       return x;
     },
     visitList$1: function(list) {
-      var copy, len, i;
+      var copy, t1, len, i;
       copy = this._visited.$index(0, list);
       if (copy != null)
         return copy;
-      len = J.get$length$asx(list);
+      t1 = J.getInterceptor$asx(list);
+      len = t1.get$length(list);
       copy = Array(len);
       copy.fixed$length = init;
       this._visited.$indexSet(0, list, copy);
-      for (i = 0; i < len; ++i) {
-        if (i >= list.length)
-          return H.ioore(list, i);
-        copy[i] = this._dispatch$1(list[i]);
-      }
+      for (i = 0; i < len; ++i)
+        copy[i] = this._dispatch$1(t1.$index(list, i));
       return copy;
     },
     visitMap$1: function(map) {
@@ -1552,17 +1560,16 @@ var $$ = Object.create(null);
       return ["map", t1, keys, this._serializeList$1(P.List_List$from(t2, true, H.getRuntimeTypeArgument(t2, "IterableBase", 0)))];
     },
     _serializeList$1: function(list) {
-      var len, result, i, t1;
-      len = J.get$length$asx(list);
+      var t1, len, result, i, t2;
+      t1 = J.getInterceptor$asx(list);
+      len = t1.get$length(list);
       result = [];
       C.JSArray_methods.set$length(result, len);
       for (i = 0; i < len; ++i) {
-        if (i >= list.length)
-          return H.ioore(list, i);
-        t1 = this._dispatch$1(list[i]);
+        t2 = this._dispatch$1(t1.$index(list, i));
         if (i >= result.length)
           return H.ioore(result, i);
-        result[i] = t1;
+        result[i] = t2;
       }
       return result;
     },
@@ -2590,6 +2597,9 @@ var $$ = Object.create(null);
   applyHooksTransformer: function(transformer, hooks) {
     return transformer(hooks) || hooks;
   },
+  stringContainsUnchecked: function(receiver, other, startIndex) {
+    return C.JSString_methods.indexOf$2(receiver, other, startIndex) !== -1;
+  },
   ReflectionInfo: {
     "^": "Object;jsFunction,data>,isAccessor,requiredParameterCount,optionalParameterCount,areOptionalParametersNamed,functionType,cachedSortedIndices",
     static: {"^": "ReflectionInfo_REQUIRED_PARAMETERS_INFO,ReflectionInfo_OPTIONAL_PARAMETERS_INFO,ReflectionInfo_FUNCTION_TYPE_INDEX,ReflectionInfo_FIRST_DEFAULT_ARGUMENT", ReflectionInfo_ReflectionInfo: function(jsFunction) {
@@ -2768,7 +2778,7 @@ var $$ = Object.create(null);
     "^": "Closure;"
   },
   BoundClosure: {
-    "^": "TearOffClosure;_self,__js_helper$_target,_receiver,__js_helper$_name",
+    "^": "TearOffClosure;_self,_target,_receiver,__js_helper$_name",
     $eq: function(_, other) {
       if (other == null)
         return false;
@@ -2776,7 +2786,7 @@ var $$ = Object.create(null);
         return true;
       if (!J.getInterceptor(other).$isBoundClosure)
         return false;
-      return this._self === other._self && this.__js_helper$_target === other.__js_helper$_target && this._receiver === other._receiver;
+      return this._self === other._self && this._target === other._target && this._receiver === other._receiver;
     },
     get$hashCode: function(_) {
       var t1, receiverHashCode;
@@ -2785,7 +2795,7 @@ var $$ = Object.create(null);
         receiverHashCode = H.Primitives_objectHashCode(this._self);
       else
         receiverHashCode = typeof t1 !== "object" ? J.get$hashCode$(t1) : H.Primitives_objectHashCode(t1);
-      t1 = H.Primitives_objectHashCode(this.__js_helper$_target);
+      t1 = H.Primitives_objectHashCode(this._target);
       if (typeof receiverHashCode !== "number")
         return receiverHashCode.$xor();
       return (receiverHashCode ^ t1) >>> 0;
@@ -2982,9 +2992,9 @@ var $$ = Object.create(null);
     return symbol.get$_name();
   },
   ListIterator: {
-    "^": "Object;_iterable,__internal$_length,_index,__internal$_current",
+    "^": "Object;_iterable,__internal$_length,_index,_current",
     get$current: function() {
-      return this.__internal$_current;
+      return this._current;
     },
     moveNext$0: function() {
       var t1, t2, $length, t3;
@@ -2995,10 +3005,10 @@ var $$ = Object.create(null);
         throw H.wrapException(P.ConcurrentModificationError$(t1));
       t3 = this._index;
       if (t3 >= $length) {
-        this.__internal$_current = null;
+        this._current = null;
         return false;
       }
-      this.__internal$_current = t2.elementAt$1(t1, t3);
+      this._current = t2.elementAt$1(t1, t3);
       ++this._index;
       return true;
     }
@@ -3026,21 +3036,21 @@ var $$ = Object.create(null);
     "^": "MappedIterable;_iterable,_f"
   },
   MappedIterator: {
-    "^": "Iterator;__internal$_current,_iterator,_f",
+    "^": "Iterator;_current,_iterator,_f",
     _f$1: function(arg0) {
       return this._f.call$1(arg0);
     },
     moveNext$0: function() {
       var t1 = this._iterator;
       if (t1.moveNext$0()) {
-        this.__internal$_current = this._f$1(t1.get$current());
+        this._current = this._f$1(t1.get$current());
         return true;
       }
-      this.__internal$_current = null;
+      this._current = null;
       return false;
     },
     get$current: function() {
-      return this.__internal$_current;
+      return this._current;
     }
   },
   FixedLengthListMixin: {
@@ -4840,10 +4850,8 @@ var $$ = Object.create(null);
       var $length, i;
       $length = this.get$length(receiver);
       for (i = 0; i < $length; ++i) {
-        if (i >= receiver.length)
-          return H.ioore(receiver, i);
-        action.call$1(receiver[i]);
-        if ($length !== receiver.length)
+        action.call$1(this.$index(receiver, i));
+        if ($length !== this.get$length(receiver))
           throw H.wrapException(P.ConcurrentModificationError$(receiver));
       }
     },
@@ -5476,10 +5484,10 @@ var $$ = Object.create(null);
   "^": "",
   HtmlElement: {
     "^": "Element;",
-    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMenuItemElement|HTMLMetaElement|HTMLModElement|HTMLOListElement|HTMLOptGroupElement|HTMLParagraphElement|HTMLPictureElement|HTMLPreElement|HTMLQuoteElement|HTMLShadowElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTitleElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
+    "%": "HTMLAppletElement|HTMLBRElement|HTMLBaseElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDialogElement|HTMLDirectoryElement|HTMLDivElement|HTMLFieldSetElement|HTMLFontElement|HTMLFrameElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLKeygenElement|HTMLLabelElement|HTMLLegendElement|HTMLMapElement|HTMLMarqueeElement|HTMLMetaElement|HTMLModElement|HTMLOptGroupElement|HTMLParagraphElement|HTMLPictureElement|HTMLPreElement|HTMLQuoteElement|HTMLShadowElement|HTMLSpanElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableDataCellElement|HTMLTableElement|HTMLTableHeaderCellElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTemplateElement|HTMLTitleElement|HTMLUListElement|HTMLUnknownElement;HTMLElement"
   },
   AnchorElement: {
-    "^": "HtmlElement;",
+    "^": "HtmlElement;type}",
     toString$0: function(receiver) {
       return receiver.toString();
     },
@@ -5502,7 +5510,7 @@ var $$ = Object.create(null);
     "%": "HTMLBodyElement"
   },
   ButtonElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;type},value%",
     "%": "HTMLButtonElement"
   },
   CanvasElement: {
@@ -5544,6 +5552,36 @@ var $$ = Object.create(null);
   CompositionEvent: {
     "^": "UIEvent;data=",
     "%": "CompositionEvent"
+  },
+  CssStyleDeclaration: {
+    "^": "Interceptor_CssStyleDeclarationBase;length=",
+    setProperty$3: function(receiver, propertyName, value, priority) {
+      var t1;
+      if (W.CssStyleDeclaration__camelCase(propertyName) in receiver)
+        return this._setPropertyHelper$3(receiver, propertyName, value, priority);
+      else {
+        t1 = P.Device_cssPrefix();
+        if (t1 == null)
+          return t1.$add();
+        return this._setPropertyHelper$3(receiver, t1 + propertyName, value, priority);
+      }
+    },
+    _setPropertyHelper$3: function(receiver, propertyName, value, priority) {
+      var exception;
+      try {
+        if (value == null)
+          value = "";
+        if (priority == null)
+          priority = "";
+        receiver.setProperty(propertyName, value, priority);
+        if (!!receiver.setAttribute)
+          receiver.setAttribute(propertyName, value);
+      } catch (exception) {
+        H.unwrapException(exception);
+      }
+
+    },
+    "%": "CSS2Properties|CSSStyleDeclaration|MSStyleCSSProperties"
   },
   DomException: {
     "^": "Interceptor;",
@@ -5629,7 +5667,7 @@ var $$ = Object.create(null);
     "%": ";Element"
   },
   EmbedElement: {
-    "^": "HtmlElement;height=,src},width=",
+    "^": "HtmlElement;height=,src},type},width=",
     "%": "HTMLEmbedElement"
   },
   ErrorEvent: {
@@ -5667,14 +5705,18 @@ var $$ = Object.create(null);
     "%": "HTMLImageElement"
   },
   InputElement: {
-    "^": "HtmlElement;height=,src},value=,width=",
+    "^": "HtmlElement;height=,src},type},value%,width=",
     $isElement: true,
     $isEventTarget: true,
     "%": "HTMLInputElement"
   },
   LIElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLLIElement"
+  },
+  LinkElement: {
+    "^": "HtmlElement;type}",
+    "%": "HTMLLinkElement"
   },
   MediaElement: {
     "^": "HtmlElement;error=,src}",
@@ -5684,6 +5726,14 @@ var $$ = Object.create(null);
     "^": "EventTarget;id=",
     "%": "MediaStream"
   },
+  MenuElement: {
+    "^": "HtmlElement;type}",
+    "%": "HTMLMenuElement"
+  },
+  MenuItemElement: {
+    "^": "HtmlElement;type}",
+    "%": "HTMLMenuItemElement"
+  },
   MessageEvent: {
     "^": "Event;",
     get$data: function(receiver) {
@@ -5692,7 +5742,7 @@ var $$ = Object.create(null);
     "%": "MessageEvent"
   },
   MeterElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLMeterElement"
   },
   MidiMessageEvent: {
@@ -5717,30 +5767,64 @@ var $$ = Object.create(null);
   },
   Node: {
     "^": "EventTarget;",
+    remove$0: function(receiver) {
+      var t1 = receiver.parentNode;
+      if (t1 != null)
+        t1.removeChild(receiver);
+    },
     toString$0: function(receiver) {
       var t1 = receiver.nodeValue;
       return t1 == null ? J.Interceptor.prototype.toString$0.call(this, receiver) : t1;
     },
     "%": "Attr|Document|DocumentFragment|DocumentType|HTMLDocument|Notation|ShadowRoot|XMLDocument;Node"
   },
+  NodeList: {
+    "^": "Interceptor_ListMixin_ImmutableListMixin;",
+    get$length: function(receiver) {
+      return receiver.length;
+    },
+    $index: function(receiver, index) {
+      if (index >>> 0 !== index || index >= receiver.length)
+        throw H.wrapException(P.IndexError$(index, receiver, null, null, null));
+      return receiver[index];
+    },
+    $indexSet: function(receiver, index, value) {
+      throw H.wrapException(P.UnsupportedError$("Cannot assign element of immutable List."));
+    },
+    elementAt$1: function(receiver, index) {
+      if (index < 0 || index >= receiver.length)
+        return H.ioore(receiver, index);
+      return receiver[index];
+    },
+    $isList: true,
+    $asList: function() {
+      return [W.Node];
+    },
+    $isJavaScriptIndexingBehavior: true,
+    "%": "NodeList|RadioNodeList"
+  },
+  OListElement: {
+    "^": "HtmlElement;type}",
+    "%": "HTMLOListElement"
+  },
   ObjectElement: {
-    "^": "HtmlElement;data=,height=,width=",
+    "^": "HtmlElement;data=,height=,type},width=",
     "%": "HTMLObjectElement"
   },
   OptionElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLOptionElement"
   },
   OutputElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLOutputElement"
   },
   ParamElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLParamElement"
   },
   ProgressElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLProgressElement"
   },
   PushEvent: {
@@ -5748,23 +5832,27 @@ var $$ = Object.create(null);
     "%": "PushEvent"
   },
   ScriptElement: {
-    "^": "HtmlElement;src}",
+    "^": "HtmlElement;src},type}",
     "%": "HTMLScriptElement"
   },
   SelectElement: {
-    "^": "HtmlElement;length=,value=",
+    "^": "HtmlElement;length=,value%",
     "%": "HTMLSelectElement"
   },
   SourceElement: {
-    "^": "HtmlElement;src}",
+    "^": "HtmlElement;src},type}",
     "%": "HTMLSourceElement"
   },
   SpeechRecognitionError: {
     "^": "Event;error=",
     "%": "SpeechRecognitionError"
   },
+  StyleElement: {
+    "^": "HtmlElement;type}",
+    "%": "HTMLStyleElement"
+  },
   TextAreaElement: {
-    "^": "HtmlElement;value=",
+    "^": "HtmlElement;value%",
     "%": "HTMLTextAreaElement"
   },
   TextEvent: {
@@ -5780,7 +5868,7 @@ var $$ = Object.create(null);
     "%": "TouchEvent"
   },
   TouchList: {
-    "^": "Interceptor_ListMixin_ImmutableListMixin;",
+    "^": "Interceptor_ListMixin_ImmutableListMixin0;",
     get$length: function(receiver) {
       return receiver.length;
     },
@@ -5930,8 +6018,23 @@ var $$ = Object.create(null);
     $isEventTarget: true,
     "%": "HTMLFrameSetElement"
   },
+  CssStyleDeclaration__camelCase: function(hyphenated) {
+    return hyphenated.replace(/^-ms-/, "ms-").replace(/-([\da-z])/ig, C.JS_CONST_s8I);
+  },
   ImageElement_ImageElement: function(height, src, width) {
     var e = document.createElement("img", null);
+    return e;
+  },
+  InputElement_InputElement: function(type) {
+    var e, exception;
+    e = document.createElement("input", null);
+    if (type != null)
+      try {
+        J.set$type$x(e, type);
+      } catch (exception) {
+        H.unwrapException(exception);
+      }
+
     return e;
   },
   WebSocket_WebSocket: function(url, protocol_OR_protocols) {
@@ -5965,15 +6068,47 @@ var $$ = Object.create(null);
       return callback;
     return t1.bindUnaryCallback$2$runGuarded(callback, true);
   },
+  Interceptor_CssStyleDeclarationBase: {
+    "^": "Interceptor+CssStyleDeclarationBase;"
+  },
+  CssStyleDeclarationBase: {
+    "^": "Object;",
+    set$font: function(receiver, value) {
+      this.setProperty$3(receiver, "font", value, "");
+    },
+    set$left: function(receiver, value) {
+      this.setProperty$3(receiver, "left", value, "");
+    },
+    set$position: function(receiver, value) {
+      this.setProperty$3(receiver, "position", value, "");
+    },
+    set$top: function(receiver, value) {
+      this.setProperty$3(receiver, "top", value, "");
+    }
+  },
   Interceptor_ListMixin: {
+    "^": "Interceptor+ListMixin;",
+    $isList: true,
+    $asList: function() {
+      return [W.Node];
+    }
+  },
+  Interceptor_ListMixin_ImmutableListMixin: {
+    "^": "Interceptor_ListMixin+ImmutableListMixin;",
+    $isList: true,
+    $asList: function() {
+      return [W.Node];
+    }
+  },
+  Interceptor_ListMixin0: {
     "^": "Interceptor+ListMixin;",
     $isList: true,
     $asList: function() {
       return [W.Touch];
     }
   },
-  Interceptor_ListMixin_ImmutableListMixin: {
-    "^": "Interceptor_ListMixin+ImmutableListMixin;",
+  Interceptor_ListMixin_ImmutableListMixin0: {
+    "^": "Interceptor_ListMixin0+ImmutableListMixin;",
     $isList: true,
     $asList: function() {
       return [W.Touch];
@@ -5989,24 +6124,24 @@ var $$ = Object.create(null);
     }
   },
   _EventStream: {
-    "^": "Stream;_target,_eventType,_useCapture",
+    "^": "Stream;_html$_target,_eventType,_useCapture",
     listen$4$cancelOnError$onDone$onError: function(onData, cancelOnError, onDone, onError) {
-      var t1 = new W._EventStreamSubscription(0, this._target, this._eventType, W._wrapZone(onData), this._useCapture);
+      var t1 = new W._EventStreamSubscription(0, this._html$_target, this._eventType, W._wrapZone(onData), this._useCapture);
       t1.$builtinTypeInfo = this.$builtinTypeInfo;
       t1._tryResume$0();
       return t1;
     }
   },
   _ElementEventStreamImpl: {
-    "^": "_EventStream;_target,_eventType,_useCapture"
+    "^": "_EventStream;_html$_target,_eventType,_useCapture"
   },
   _EventStreamSubscription: {
-    "^": "StreamSubscription;_pauseCount,_target,_eventType,_onData,_useCapture",
+    "^": "StreamSubscription;_pauseCount,_html$_target,_eventType,_onData,_useCapture",
     cancel$0: function(_) {
-      if (this._target == null)
+      if (this._html$_target == null)
         return;
       this._unlisten$0();
-      this._target = null;
+      this._html$_target = null;
       this._onData = null;
       return;
     },
@@ -6015,7 +6150,7 @@ var $$ = Object.create(null);
       t1 = this._onData;
       t2 = t1 != null;
       if (t2 && this._pauseCount <= 0) {
-        t3 = this._target;
+        t3 = this._html$_target;
         t3.toString;
         if (t2)
           J._addEventListener$3$x(t3, this._eventType, t1, this._useCapture);
@@ -6026,7 +6161,7 @@ var $$ = Object.create(null);
       t1 = this._onData;
       t2 = t1 != null;
       if (t2) {
-        t3 = this._target;
+        t3 = this._html$_target;
         t3.toString;
         if (t2)
           J._removeEventListener$3$x(t3, this._eventType, t1, this._useCapture);
@@ -6042,22 +6177,22 @@ var $$ = Object.create(null);
     $asList: null
   },
   FixedSizeListIterator: {
-    "^": "Object;_array,_length,_position,_current",
+    "^": "Object;_array,_length,_position,_html$_current",
     moveNext$0: function() {
       var nextPosition, t1;
       nextPosition = this._position + 1;
       t1 = this._length;
       if (nextPosition < t1) {
-        this._current = J.$index$asx(this._array, nextPosition);
+        this._html$_current = J.$index$asx(this._array, nextPosition);
         this._position = nextPosition;
         return true;
       }
-      this._current = null;
+      this._html$_current = null;
       this._position = t1;
       return false;
     },
     get$current: function() {
-      return this._current;
+      return this._html$_current;
     }
   },
   _DOMWindowCrossFrame: {
@@ -6169,6 +6304,14 @@ var $$ = Object.create(null);
     "^": "GeometryElement;height=,width=",
     "%": "SVGRectElement"
   },
+  ScriptElement0: {
+    "^": "SvgElement;type}",
+    "%": "SVGScriptElement"
+  },
+  StyleElement0: {
+    "^": "SvgElement;type}",
+    "%": "SVGStyleElement"
+  },
   SvgElement: {
     "^": "Element;",
     get$onClick: function(receiver) {
@@ -6184,7 +6327,7 @@ var $$ = Object.create(null);
       return H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(receiver, "mouseup", false), [null]);
     },
     $isEventTarget: true,
-    "%": "SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDescElement|SVGDiscardElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGHKernElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMetadataElement|SVGMissingGlyphElement|SVGRadialGradientElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGSymbolElement|SVGTitleElement|SVGVKernElement|SVGViewElement;SVGElement"
+    "%": "SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDescElement|SVGDiscardElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGHKernElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMetadataElement|SVGMissingGlyphElement|SVGRadialGradientElement|SVGSetElement|SVGStopElement|SVGSymbolElement|SVGTitleElement|SVGVKernElement|SVGViewElement;SVGElement"
   },
   SvgSvgElement: {
     "^": "GraphicsElement;height=,width=",
@@ -6543,6 +6686,45 @@ var $$ = Object.create(null);
     var copies = [];
     return new P.convertNativeToDart_AcceptStructuredClone_walk(mustCopy, new P.convertNativeToDart_AcceptStructuredClone_findSlot([], copies), new P.convertNativeToDart_AcceptStructuredClone_readSlot(copies), new P.convertNativeToDart_AcceptStructuredClone_writeSlot(copies)).call$1(object);
   },
+  Device_isOpera: function() {
+    var t1 = $.Device__isOpera;
+    if (t1 == null) {
+      t1 = J.contains$2$asx(window.navigator.userAgent, "Opera", 0);
+      $.Device__isOpera = t1;
+    }
+    return t1;
+  },
+  Device_cssPrefix: function() {
+    var t1 = $.Device__cachedCssPrefix;
+    if (t1 == null) {
+      t1 = $.Device__isFirefox;
+      if (t1 == null) {
+        t1 = J.contains$2$asx(window.navigator.userAgent, "Firefox", 0);
+        $.Device__isFirefox = t1;
+      }
+      if (t1 === true) {
+        $.Device__cachedCssPrefix = "-moz-";
+        t1 = "-moz-";
+      } else {
+        t1 = $.Device__isIE;
+        if (t1 == null) {
+          t1 = P.Device_isOpera() !== true && J.contains$2$asx(window.navigator.userAgent, "Trident/", 0);
+          $.Device__isIE = t1;
+        }
+        if (t1 === true) {
+          $.Device__cachedCssPrefix = "-ms-";
+          t1 = "-ms-";
+        } else if (P.Device_isOpera() === true) {
+          $.Device__cachedCssPrefix = "-o-";
+          t1 = "-o-";
+        } else {
+          $.Device__cachedCssPrefix = "-webkit-";
+          t1 = "-webkit-";
+        }
+      }
+    }
+    return t1;
+  },
   convertNativeToDart_AcceptStructuredClone_findSlot: {
     "^": "Closure:4;values_0,copies_1",
     call$1: function(value) {
@@ -6601,7 +6783,7 @@ var $$ = Object.create(null);
         copy = P.LinkedHashMap_LinkedHashMap$_empty(null, null);
         this.writeSlot_7.call$2(slot, copy);
         for (t1 = Object.keys(e), t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();) {
-          key = t1.__internal$_current;
+          key = t1._current;
           copy.$indexSet(0, key, this.call$1(e[key]));
         }
         return copy;
@@ -6634,23 +6816,23 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.150.109:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.151.152:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "close", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure0(retrySeconds, t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure0(retrySeconds, t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "error", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure1(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure1(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
     t2 = $.ws;
     t2.toString;
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "message", false), [null]);
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.initWebSocket_closure2()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.initWebSocket_closure2()), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
   },
   main: [function() {
     var t1, t2, t3, t4;
@@ -6661,12 +6843,10 @@ var $$ = Object.create(null);
     t3 = P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.TouchBinding);
     t4 = new X.TouchLayer(H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
     t4.enabled = true;
-    t4 = new X.Game(null, t1, null, null, null, null, null, new X.TouchManager(false, null, t2, t3), t4, null, true, false, null, null, true, H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
+    t4 = new X.Game(null, t1, null, null, null, null, null, new X.TouchManager(false, null, t2, t3), t4, null, "false", "false", "false", "false", null, null, true, H.setRuntimeTypeInfo([], [X.Touchable]), P.LinkedHashMap_LinkedHashMap(null, null, null, P.$int, X.Touchable), null);
     t4.enabled = true;
     t4.Game$0();
     $.game = t4;
-    t4 = J.get$onClick$x(document.querySelector("#submit"));
-    H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t4._target, t4._eventType, W._wrapZone(new X.main_closure()), t4._useCapture), [H.getTypeArgumentByIndex(t4, 0)])._tryResume$0();
   }, "call$0", "main$closure", 0, 0, 2],
   Box: {
     "^": "Object;x',y',color',id>,dragged,imageWidth,imageHeight,touched_x_offset,touched_y_offset,img,rightBuddy,leftBuddy,upperBuddy,lowerBuddy,leftNeighbor,rightNeighbor,upperNeighbor,lowerNeighbor,dragTimer",
@@ -6751,51 +6931,103 @@ var $$ = Object.create(null);
     }
   },
   Game: {
-    "^": "TouchLayer;canvas,img,ctx,width,height,myState,box,tmanager,tlayer,score,phaseBreak,phaseCongrats,clientID,trialNum,flagDraw,touchables,touch_bindings,enabled",
+    "^": "TouchLayer;canvas,img,ctx,width,height,myState,box,tmanager,tlayer,score,phaseBreak,phaseCongrats,phaseStarted,phaseEnd,clientID,trialNum,flagDraw,touchables,touch_bindings,enabled",
     animate$1: [function(_, i) {
       C.Window_methods.get$animationFrame(window).then$1(this.get$animate(this));
       this.draw$0();
     }, "call$1", "get$animate", 2, 0, 21],
     draw$0: function() {
       var t1, t2;
-      if (this.flagDraw) {
-        J.save$0$x(this.ctx);
-        J.setTransform$6$x(this.ctx, 1, 0, 0, 1, 0, 0);
-        J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
-        J.restore$0$x(this.ctx);
-        if (J.$eq(this.phaseBreak, "false")) {
-          t1 = J.$eq(this.phaseCongrats, "true");
-          t2 = this.ctx;
-          if (t1) {
-            J.set$fillStyle$x(t2, "white");
-            J.set$font$x(this.ctx, "30px sans-serif");
-            J.set$textAlign$x(this.ctx, "left");
-            J.set$textBaseline$x(this.ctx, "center");
-            J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
-            J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
-            J.fillText$3$x(this.ctx, "Congratuations! You have passed this stage. Please wait while we send you to the next stage.", 100, 150);
-            for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-              t1.__internal$_current.draw$1(this.ctx);
-            this.flagDraw = false;
-          } else {
-            J.set$fillStyle$x(t2, "white");
-            J.set$font$x(this.ctx, "30px sans-serif");
-            J.set$textAlign$x(this.ctx, "left");
-            J.set$textBaseline$x(this.ctx, "center");
-            J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
-            J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
-            for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-              t1.__internal$_current.draw$1(this.ctx);
-            this.flagDraw = false;
-          }
-        } else if (J.$eq(this.phaseBreak, "true")) {
+      if (this.flagDraw)
+        if (J.$eq(this.phaseStarted, "false")) {
+          this.flagDraw = false;
+          return;
+        } else if (J.$eq(this.phaseEnd, "true")) {
+          this.clear$0(0);
           J.set$fillStyle$x(this.ctx, "white");
           J.set$font$x(this.ctx, "30px sans-serif");
           J.set$textAlign$x(this.ctx, "left");
           J.set$textBaseline$x(this.ctx, "center");
-          J.fillText$3$x(this.ctx, "10 second break!", 100, 50);
+          J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+          J.fillText$3$x(this.ctx, "Congratuations! You have Finish all the trials. :)", 100, 150);
+        } else {
+          this.clear$0(0);
+          if (J.$eq(this.phaseBreak, "false")) {
+            t1 = J.$eq(this.phaseCongrats, "true");
+            t2 = this.ctx;
+            if (t1) {
+              J.set$fillStyle$x(t2, "white");
+              J.set$font$x(this.ctx, "30px sans-serif");
+              J.set$textAlign$x(this.ctx, "left");
+              J.set$textBaseline$x(this.ctx, "center");
+              J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+              J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
+              J.fillText$3$x(this.ctx, "Congratuations! You have passed this stage. Please wait while we send you to the next stage.", 100, 150);
+              for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
+                t1._current.draw$1(this.ctx);
+              this.flagDraw = false;
+            } else {
+              J.set$fillStyle$x(t2, "white");
+              J.set$font$x(this.ctx, "30px sans-serif");
+              J.set$textAlign$x(this.ctx, "left");
+              J.set$textBaseline$x(this.ctx, "center");
+              J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+              J.fillText$3$x(this.ctx, "Score: " + H.S(this.score), 100, 100);
+              for (t1 = this.myState.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
+                t1._current.draw$1(this.ctx);
+              this.flagDraw = false;
+            }
+          } else if (J.$eq(this.phaseBreak, "true")) {
+            J.set$fillStyle$x(this.ctx, "white");
+            J.set$font$x(this.ctx, "30px sans-serif");
+            J.set$textAlign$x(this.ctx, "left");
+            J.set$textBaseline$x(this.ctx, "center");
+            J.fillText$3$x(this.ctx, "10 second break!", 100, 50);
+          }
         }
+    },
+    drawWelcome$0: function() {
+      var t1, inputStage, t2, submitButton;
+      t1 = {};
+      if (J.$eq(this.phaseStarted, false) || J.$eq(this.phaseStarted, "false")) {
+        this.clear$0(0);
+        J.set$fillStyle$x(this.ctx, "white");
+        J.set$font$x(this.ctx, "30px sans-serif");
+        J.set$textAlign$x(this.ctx, "left");
+        J.set$textBaseline$x(this.ctx, "center");
+        J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
+        J.fillText$3$x(this.ctx, "Intro", 100, 100);
+        J.fillText$3$x(this.ctx, "Blah, Blah, Blah.", 100, 150);
+        t1.inputStage_0 = null;
+        inputStage = W.InputElement_InputElement(null);
+        t1.inputStage_0 = inputStage;
+        t2 = inputStage.style;
+        J.getInterceptor$x(t2).set$position(t2, "absolute");
+        C.CssStyleDeclaration_methods.set$left(t2, "100px");
+        C.CssStyleDeclaration_methods.set$top(t2, "200px");
+        C.CssStyleDeclaration_methods.set$font(t2, "30px sans-serif");
+        J.set$value$x(t1.inputStage_0, "1");
+        document.body.appendChild(t1.inputStage_0);
+        t1.submitButton_1 = null;
+        submitButton = document.createElement("button", null);
+        t1.submitButton_1 = submitButton;
+        t2 = submitButton.style;
+        J.getInterceptor$x(t2).set$position(t2, "absolute");
+        C.CssStyleDeclaration_methods.set$left(t2, "100px");
+        C.CssStyleDeclaration_methods.set$top(t2, "250px");
+        C.CssStyleDeclaration_methods.set$font(t2, "30px sans-serif");
+        t2 = t1.submitButton_1;
+        t2.textContent = "Submit";
+        t2 = J.get$onClick$x(t2);
+        H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.Game_drawWelcome_closure(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+        document.body.appendChild(t1.submitButton_1);
       }
+    },
+    clear$0: function(_) {
+      J.save$0$x(this.ctx);
+      J.setTransform$6$x(this.ctx, 1, 0, 0, 1, 0, 0);
+      J.clearRect$4$x(this.ctx, 0, 0, this.width, this.height);
+      J.restore$0$x(this.ctx);
     },
     handleMsg$1: function(data) {
       var t1, objectsData, t2, data0, t3, t4, t5, t6, phaseData, temp;
@@ -6804,7 +7036,7 @@ var $$ = Object.create(null);
       if (J.$eq(t1.$index(data, 0), "u")) {
         objectsData = t1.substring$1(data, 2).split(";");
         for (t2 = new H.ListIterator(objectsData, objectsData.length, 0, null); t2.moveNext$0();) {
-          data0 = J.split$1$s(t2.__internal$_current, ",");
+          data0 = J.split$1$s(t2._current, ",");
           if (data0.length > 3) {
             t3 = this.myState;
             t4 = P.num_parse(data0[0], null);
@@ -6824,9 +7056,11 @@ var $$ = Object.create(null);
         this.score = t1.substring$1(data, 2);
       if (J.$eq(t1.$index(data, 0), "p")) {
         phaseData = t1.substring$1(data, 2).split(",");
-        if (phaseData.length >= 2) {
-          this.phaseBreak = phaseData[0];
-          this.phaseCongrats = phaseData[1];
+        if (phaseData.length >= 4) {
+          this.phaseStarted = phaseData[0];
+          this.phaseBreak = phaseData[1];
+          this.phaseCongrats = phaseData[2];
+          this.phaseEnd = phaseData[3];
         }
       }
       if (J.$eq(t1.$index(data, 0), "i")) {
@@ -6862,7 +7096,17 @@ var $$ = Object.create(null);
       t1.boxGame = this;
       t1.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
       this.myState = t1;
+      this.drawWelcome$0();
       C.Window_methods.get$animationFrame(window).then$1(this.get$animate(this));
+    }
+  },
+  Game_drawWelcome_closure: {
+    "^": "Closure:7;box_0",
+    call$1: function($event) {
+      var t1 = this.box_0;
+      $.ws.send("s:" + H.S(J.get$value$x(t1.inputStage_0)));
+      J.remove$0$ax(t1.submitButton_1);
+      J.remove$0$ax(t1.inputStage_0);
     }
   },
   initWebSocket_scheduleReconnect: {
@@ -6910,23 +7154,12 @@ var $$ = Object.create(null);
       $.game.handleMsg$1(J.get$data$x(e));
     }
   },
-  main_closure: {
-    "^": "Closure:7;",
-    call$1: function($event) {
-      var level;
-      J.preventDefault$0$x($event);
-      level = document.querySelector("#level");
-      $.ws.send("s:" + H.S(J.get$value$x(level)));
-      P.print("Sent form");
-      return;
-    }
-  },
   State: {
     "^": "Object;boxGame,myBoxes",
     updateBox$4: function(id, x, y, color) {
       var t1, t2, found, box, t3, temp;
       for (t1 = this.myBoxes, t1 = new H.ListIterator(t1, t1.length, 0, null), t2 = J.getInterceptor(id), found = false; t1.moveNext$0();) {
-        box = t1.__internal$_current;
+        box = t1._current;
         t3 = J.getInterceptor$x(box);
         if (t2.$eq(id, t3.get$id(box))) {
           t3.set$x(box, x);
@@ -6964,19 +7197,19 @@ var $$ = Object.create(null);
       this.parent = element;
       t1 = J.getInterceptor$x(element);
       t2 = t1.get$onMouseDown(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
       t2 = t1.get$onMouseUp(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure0(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure0(this)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
       t1 = t1.get$onMouseMove(element);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure1(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure1(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchstart", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure2(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure2(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchmove", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure3(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure3(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._ElementEventStreamImpl(element, "touchend", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure4(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure4(this)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
       t1 = H.setRuntimeTypeInfo(new W._EventStream(document, "touchmove", false), [null]);
-      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure5()), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+      H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._html$_target, t1._eventType, W._wrapZone(new X.TouchManager_registerEvents_closure5()), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
     },
     _touchUp$1: function(evt) {
       var t, t1, target, touchExists, i;
@@ -7178,6 +7411,9 @@ $$ = null;
   _ = P.$double;
   _.$is$double = TRUE;
   _.$isObject = TRUE;
+  _ = W.Node;
+  _.$isNode = TRUE;
+  _.$isObject = TRUE;
   W.Touch.$isObject = TRUE;
   _ = P.String;
   _.$isString = TRUE;
@@ -7206,6 +7442,12 @@ $$ = null;
   _.$isMessageEvent = TRUE;
   _.$isObject = TRUE;
   P.Object.$isObject = TRUE;
+  _ = W.AnimationPlayer;
+  _.$isAnimationPlayer = TRUE;
+  _.$isObject = TRUE;
+  _ = P.AsyncError;
+  _.$isAsyncError = TRUE;
+  _.$isObject = TRUE;
   _ = P._EventSink;
   _.$is_EventSink = TRUE;
   _.$isObject = TRUE;
@@ -7214,21 +7456,16 @@ $$ = null;
   _.$isObject = TRUE;
   _ = W.HtmlElement;
   _.$isHtmlElement = TRUE;
+  _.$isNode = TRUE;
   _.$isObject = TRUE;
   _ = P._DelayedEvent;
   _.$is_DelayedEvent = TRUE;
   _.$isObject = TRUE;
-  _ = P.StreamSubscription;
-  _.$isStreamSubscription = TRUE;
-  _.$isObject = TRUE;
-  _ = P.AsyncError;
-  _.$isAsyncError = TRUE;
-  _.$isObject = TRUE;
   _ = P.DateTime;
   _.$isDateTime = TRUE;
   _.$isObject = TRUE;
-  _ = W.AnimationPlayer;
-  _.$isAnimationPlayer = TRUE;
+  _ = P.StreamSubscription;
+  _.$isStreamSubscription = TRUE;
   _.$isObject = TRUE;
   _ = P.Function;
   _.$isFunction = TRUE;
@@ -7363,6 +7600,9 @@ J.clearRect$4$x = function(receiver, a0, a1, a2, a3) {
 J.contains$1$asx = function(receiver, a0) {
   return J.getInterceptor$asx(receiver).contains$1(receiver, a0);
 };
+J.contains$2$asx = function(receiver, a0, a1) {
+  return J.getInterceptor$asx(receiver).contains$2(receiver, a0, a1);
+};
 J.fillText$3$x = function(receiver, a0, a1, a2) {
   return J.getInterceptor$x(receiver).fillText$3(receiver, a0, a1, a2);
 };
@@ -7417,6 +7657,9 @@ J.getContext$1$x = function(receiver, a0) {
 J.preventDefault$0$x = function(receiver) {
   return J.getInterceptor$x(receiver).preventDefault$0(receiver);
 };
+J.remove$0$ax = function(receiver) {
+  return J.getInterceptor$ax(receiver).remove$0(receiver);
+};
 J.remove$1$ax = function(receiver, a0) {
   return J.getInterceptor$ax(receiver).remove$1(receiver, a0);
 };
@@ -7441,6 +7684,12 @@ J.set$textAlign$x = function(receiver, value) {
 J.set$textBaseline$x = function(receiver, value) {
   return J.getInterceptor$x(receiver).set$textBaseline(receiver, value);
 };
+J.set$type$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$type(receiver, value);
+};
+J.set$value$x = function(receiver, value) {
+  return J.getInterceptor$x(receiver).set$value(receiver, value);
+};
 J.setTransform$6$x = function(receiver, a0, a1, a2, a3, a4, a5) {
   return J.getInterceptor$x(receiver).setTransform$6(receiver, a0, a1, a2, a3, a4, a5);
 };
@@ -7456,6 +7705,7 @@ J.toString$0 = function(receiver) {
 J.trim$0$s = function(receiver) {
   return J.getInterceptor$s(receiver).trim$0(receiver);
 };
+C.CssStyleDeclaration_methods = W.CssStyleDeclaration.prototype;
 C.JSArray_methods = J.JSArray.prototype;
 C.JSInt_methods = J.JSInt.prototype;
 C.JSNumber_methods = J.JSNumber.prototype;
@@ -7597,6 +7847,7 @@ C.JS_CONST_rr7 = function(hooks) {
   hooks.getTag = getTagFixed;
   hooks.prototypeForTag = prototypeForTagFixed;
 };
+C.JS_CONST_s8I = function(_, letter) { return letter.toUpperCase(); };
 init.isHunkLoaded = function(hunkHash) {
   return !!$dart_deferred_initializers[hunkHash];
 };
@@ -7627,7 +7878,10 @@ $._isInCallbackLoop = false;
 $.Zone__current = C.C__RootZone;
 $.Expando__keyCount = 0;
 $.Device__isOpera = null;
+$.Device__isIE = null;
+$.Device__isFirefox = null;
 $.Device__isWebKit = null;
+$.Device__cachedCssPrefix = null;
 $.ws = null;
 $.game = null;
 Isolate.$lazy($, "thisScript", "IsolateNatives_thisScript", "get$IsolateNatives_thisScript", function() {

@@ -73,7 +73,7 @@ class State{
     }
     distributeMessage(msg);
     sendID();
-    String phaseBreak = "p:${trial.phaseBreak},${trial.phaseCongrats}";
+    String phaseBreak = "p:${trial.phaseStarted},${trial.phaseBreak},${trial.phaseCongrats},${trial.phaseEnd}";
     distributeMessage(phaseBreak);
     try{
       logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
@@ -88,11 +88,12 @@ class State{
   //simple command to toggle the dragging interaction
   noDrag(num id){
     Box boxNolongerDragged=myBoxes[id-1];
-    for (Box box in myBoxes){        
-      if (box.getParent()==boxNolongerDragged.getParent()){
-        box.dragged=false;
-      }
-    }
+    boxNolongerDragged.dragged=false;
+//    for (Box box in myBoxes){        
+//      if (box.getParent()==boxNolongerDragged.getParent()){
+//        box.dragged=false;
+//      }
+//    }
     potential-=1;
     calculateScore();
     return;
@@ -248,13 +249,14 @@ class State{
   }
   checkPieceLocation(num id){
     Box boxDragged = myBoxes[id-1];
-    for (Box box in myBoxes){
-      if (box.getParent()==boxDragged.getParent()){
-        box.dragged=true;
-        box.pieceLocation();
-        
-      }
-    }
+    boxDragged.pieceLocation();
+//    for (Box box in myBoxes){
+//      if (box.getParent()==boxDragged.getParent()){
+//        box.dragged=true;
+//        box.pieceLocation();
+//        
+//      }
+//    }
   }
   
 }
