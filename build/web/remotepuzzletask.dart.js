@@ -6816,7 +6816,7 @@ var $$ = Object.create(null);
     t1 = {};
     t1.reconnectScheduled_0 = false;
     P.print("Connecting to websocket");
-    t2 = W.WebSocket_WebSocket("ws://10.101.151.152:4040/ws", null);
+    t2 = W.WebSocket_WebSocket("ws://10.101.151.228:4040/ws", null);
     $.ws = t2;
     t1 = new X.initWebSocket_scheduleReconnect(t1, retrySeconds);
     t2 = H.setRuntimeTypeInfo(new W._EventStream(t2, "open", false), [null]);
@@ -6989,6 +6989,8 @@ var $$ = Object.create(null);
     drawWelcome$0: function() {
       var t1, inputStage, t2, submitButton;
       t1 = {};
+      t1.inputStage_0 = null;
+      t1.submitButton_1 = null;
       if (J.$eq(this.phaseStarted, false) || J.$eq(this.phaseStarted, "false")) {
         this.clear$0(0);
         J.set$fillStyle$x(this.ctx, "white");
@@ -6998,7 +7000,6 @@ var $$ = Object.create(null);
         J.fillText$3$x(this.ctx, "Server/Client Attempt: Client# " + H.S(this.clientID) + " Trial# " + H.S(this.trialNum), 100, 50);
         J.fillText$3$x(this.ctx, "Intro", 100, 100);
         J.fillText$3$x(this.ctx, "Blah, Blah, Blah.", 100, 150);
-        t1.inputStage_0 = null;
         inputStage = W.InputElement_InputElement(null);
         t1.inputStage_0 = inputStage;
         t2 = inputStage.style;
@@ -7008,7 +7009,6 @@ var $$ = Object.create(null);
         C.CssStyleDeclaration_methods.set$font(t2, "30px sans-serif");
         J.set$value$x(t1.inputStage_0, "1");
         document.body.appendChild(t1.inputStage_0);
-        t1.submitButton_1 = null;
         submitButton = document.createElement("button", null);
         t1.submitButton_1 = submitButton;
         t2 = submitButton.style;
@@ -7022,6 +7022,7 @@ var $$ = Object.create(null);
         H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t2._html$_target, t2._eventType, W._wrapZone(new X.Game_drawWelcome_closure(t1)), t2._useCapture), [H.getTypeArgumentByIndex(t2, 0)])._tryResume$0();
         document.body.appendChild(t1.submitButton_1);
       }
+      new X.Game_drawWelcome_removeElements(t1, this).call$0();
     },
     clear$0: function(_) {
       J.save$0$x(this.ctx);
@@ -7030,7 +7031,7 @@ var $$ = Object.create(null);
       J.restore$0$x(this.ctx);
     },
     handleMsg$1: function(data) {
-      var t1, objectsData, t2, data0, t3, t4, t5, t6, phaseData, temp;
+      var t1, objectsData, t2, data0, t3, t4, t5, t6, phaseData, temp, tempMsg;
       this.flagDraw = true;
       t1 = J.getInterceptor$asx(data);
       if (J.$eq(t1.$index(data, 0), "u")) {
@@ -7065,22 +7066,26 @@ var $$ = Object.create(null);
       }
       if (J.$eq(t1.$index(data, 0), "i")) {
         temp = t1.substring$1(data, 2).split(",");
-        t1 = temp.length;
-        if (0 >= t1)
+        t2 = temp.length;
+        if (0 >= t2)
           return H.ioore(temp, 0);
         this.clientID = temp[0];
-        t2 = this.trialNum;
-        if (1 >= t1)
+        t3 = this.trialNum;
+        if (1 >= t2)
           return H.ioore(temp, 1);
-        if (!J.$eq(t2, temp[1])) {
-          t1 = new X.State(null, null);
-          t1.boxGame = this;
-          t1.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
-          this.myState = t1;
+        if (!J.$eq(t3, temp[1])) {
+          t2 = new X.State(null, null);
+          t2.boxGame = this;
+          t2.myBoxes = H.setRuntimeTypeInfo([], [X.Box]);
+          this.myState = t2;
         }
         if (1 >= temp.length)
           return H.ioore(temp, 1);
         this.trialNum = temp[1];
+      }
+      if (J.$eq(t1.$index(data, 0), "a")) {
+        tempMsg = t1.substring$1(data, 2);
+        window.alert(tempMsg);
       }
     },
     Game$0: function() {
@@ -7100,13 +7105,27 @@ var $$ = Object.create(null);
       C.Window_methods.get$animationFrame(window).then$1(this.get$animate(this));
     }
   },
+  Game_drawWelcome_removeElements: {
+    "^": "Closure:2;box_0,this_1",
+    call$0: function() {
+      P.Timer_Timer(C.Duration_500, new X.Game_drawWelcome_removeElements_closure(this.box_0, this.this_1, this));
+    }
+  },
+  Game_drawWelcome_removeElements_closure: {
+    "^": "Closure:8;box_0,this_2,removeElements_3",
+    call$0: function() {
+      if (J.$eq(this.this_2.phaseStarted, "true")) {
+        var t1 = this.box_0;
+        J.remove$0$ax(t1.submitButton_1);
+        J.remove$0$ax(t1.inputStage_0);
+      } else
+        this.removeElements_3.call$0();
+    }
+  },
   Game_drawWelcome_closure: {
     "^": "Closure:7;box_0",
     call$1: function($event) {
-      var t1 = this.box_0;
-      $.ws.send("s:" + H.S(J.get$value$x(t1.inputStage_0)));
-      J.remove$0$ax(t1.submitButton_1);
-      J.remove$0$ax(t1.inputStage_0);
+      $.ws.send("s:" + H.S(J.get$value$x(this.box_0.inputStage_0)));
     }
   },
   initWebSocket_scheduleReconnect: {
@@ -7716,6 +7735,7 @@ C.Window_methods = W.Window.prototype;
 C.C_DynamicRuntimeType = new H.DynamicRuntimeType();
 C.C__RootZone = new P._RootZone();
 C.Duration_0 = new P.Duration(0);
+C.Duration_500 = new P.Duration(500);
 C.JS_CONST_0 = function(hooks) {
   if (typeof dartExperimentalFixupGetTag != "function") return hooks;
   hooks.getTag = dartExperimentalFixupGetTag(hooks.getTag);

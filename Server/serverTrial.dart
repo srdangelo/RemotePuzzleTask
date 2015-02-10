@@ -2,13 +2,19 @@ part of simple_http_server;
 
 class Trial{
   var phase = 'Start';
+  num trialSetNum=0;
   num trialNum = 0;
   bool phaseStarted=false;
   bool phaseBreak = false;
   bool phaseCongrats=false;
   bool phaseEnd=false;
   num trialID = 0;
-  List<String> order = [
+  List<String> picName=[['world','waveRainbow','tree','swril','sunset',
+                         'starry','spiralRainbow','fade','door','cupcake',
+                         'colors','coffee','beach','balloon']
+                       ];
+  List<List> order = [
+                        [
                              ['Octopus_07', 'Octopus_08', 'Octopus_09', 'Octopus_04', 'Octopus_05', 'Octopus_06', 'Octopus_01', 'Octopus_02', 'Octopus_03'],
                              ['Unicorn_07', 'Unicorn_08', 'Unicorn_09', 'Unicorn_04', 'Unicorn_05', 'Unicorn_06', 'Unicorn_01', 'Unicorn_02', 'Unicorn_03'],
                              ['tangram_14_07', 'tangram_14_08', 'tangram_14_09', 'tangram_14_04', 'tangram_14_05', 'tangram_14_06', 'tangram_14_01', 'tangram_14_02', 'tangram_14_03'],
@@ -23,9 +29,12 @@ class Trial{
                               'world_11','world_12','world_13','world_14','world_15',
                               'world_06','world_07','world_08','world_09','world_10',
                               'world_01','world_02','world_03','world_04','world_05']
-                             ];
+                             ]
+                        
+  ];
 Trial () {
- transition();
+  generateOrder();
+  transition();
 }
 
   void setup(order){
@@ -70,12 +79,12 @@ Trial () {
           case 'TRIAL':
               phase = 'CONGRATS';
               phaseBreak = false;
-              setup(order[trialNum]);
+              setup(order[trialSetNum][trialNum]);
               trialNum += 1;
-              if ((trialNum)==order.length){
+              if ((trialNum)==order[trialSetNum].length){
                 phase='END';
               }
-              else if (trialNum>order.length){
+              else if (trialNum>order[trialSetNum].length){
                 phase='END';
                 transition();
               }
@@ -101,54 +110,27 @@ Trial () {
               setup([]);
               break;
            }
-      
-     
-//     switch(phase){
-//          case 'TRIAL ZERO':
-//              phase = 'BREAK';
-//              phaseBreak = true;
-//              setup([]);
-//              new Timer(const Duration(seconds : 10), () {
-//                 transition();
-//              });
-//              break;
-//          case 'BREAK':
-//              phase = 'TRIAL ONE';
-//              phaseBreak = false;
-//              trialNum += 1;
-//              setup(order[0]);
-//              break;
-//          case 'TRIAL ONE':
-//              phase = 'BREAK1';
-//              phaseBreak = true;
-//              setup([]);
-//              new Timer(const Duration(seconds : 10), () {
-//                  transition();
-//              });
-//              break;
-//           case 'BREAK1':
-//              phase = 'TRIAL TWO';
-//              myState.score = 100;
-//              phaseBreak = false;
-//              trialNum += 1;
-//              setup(order[1]);
-//              break;
-//           case 'TRIAL TWO':
-//              phase = 'TRIAL THREE';
-//              myState.score = 100;
-//              phaseBreak = false;
-//              trialNum += 1;
-//              setup(order[2]);
-//              break;
-//           case 'TRIAL THREE':
-//              phase = 'TRIAL FOUR';
-//              myState.score = 100;
-//              phaseBreak = false;
-//              trialNum += 1;
-//              setup(order[3]);
-//              break;
-//           }
-      
    }
-  
+  void generateOrder(){
+      Random randomNum=new Random();
+      order=[];
+      for (int setNum=0;setNum<picName.length;setNum++){
+        order.add([]);
+        for (int imageNum=0;imageNum<picName[setNum].length;imageNum++){
+          order[setNum].add([]);
+          for (int i=20;i>=0;i-=5){
+            for (int j=1;j<=5;j++){
+              if (i+j>=10){
+                order[setNum][imageNum].add(picName[setNum][imageNum]+'_'+(i+j).toString());
+              }
+              else{
+                order[setNum][imageNum].add(picName[setNum][imageNum]+'_0'+(i+j).toString());
+              }            
+            }          
+          }
+        }
+        order[setNum].shuffle(randomNum);
+      }
+      //Shuffle
+    }
 }

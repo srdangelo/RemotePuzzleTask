@@ -122,6 +122,19 @@ class Game extends TouchLayer{
       
   }
   void drawWelcome(){
+    InputElement inputStage;
+    ButtonElement submitButton;
+    //Helper function
+    void removeElements(){
+          new Timer(const Duration(microseconds :500 ), () {
+                        if (phaseStarted=="true"){
+                          submitButton.remove();
+                          inputStage.remove();
+                        }
+                        else removeElements();
+                      });
+        }
+    //Main function
     if (phaseStarted==false || phaseStarted=='false'){
       clear();
       ctx.fillStyle = 'white';
@@ -131,7 +144,7 @@ class Game extends TouchLayer{
       ctx.fillText("Server/Client Attempt: Client# ${clientID} Trial# ${trialNum}", 100, 50);
       ctx.fillText("Intro", 100, 100);
       ctx.fillText("Blah, Blah, Blah.", 100, 150);
-      InputElement inputStage;
+      
       inputStage=new InputElement();
       inputStage.style
         ..position='absolute'
@@ -140,7 +153,7 @@ class Game extends TouchLayer{
         ..font='30px sans-serif';
       inputStage.value="1";
       document.body.nodes.add(inputStage);
-      ButtonElement submitButton;
+      
       submitButton=new ButtonElement();
       submitButton.style
         ..position='absolute'
@@ -151,11 +164,11 @@ class Game extends TouchLayer{
       var click_submit=submitButton.onClick.listen((event)
           {
             ws.send("s:${(inputStage.value)}");
-            submitButton.remove();
-            inputStage.remove();
           });
       document.body.nodes.add(submitButton);
       }
+    removeElements();
+    
     }
   
     void clear(){
@@ -201,5 +214,9 @@ class Game extends TouchLayer{
         trialNum = temp[1];
         
     }
+      if (data[0]=="a"){//alarm
+        String tempMsg = data.substring(2);
+        window.alert(tempMsg);
+      }
   }
 }

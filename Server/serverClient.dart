@@ -57,20 +57,31 @@ class myClient {
       
       if (num.parse(data[0])-1>=trial.order.length)
       {
-        print('Number entered is too large');
-        trial.phaseStarted=true;
-        trial.phaseEnd=true;
-        trial.phase='END';
-        trial.transition();
+        var alarmMsg='a:Number entered is too large';//a stands for alarm
+        distributeMessage(alarmMsg);
+        print(alarmMsg);
       }
-      else{
+      else if (num.parse(data[0])-1<0)
+      {
+        var alarmMsg='a:Number entered needs to be larger than 1';//a stands for alarm
+        distributeMessage(alarmMsg);
+        print(alarmMsg);
+      }
+      else if (num.parse(data[0])-1>=0&&num.parse(data[0])-1<trial.order.length){
         trial.setup([]);      
         trial.phase = 'BREAK';
         trial.phaseStarted=true;
         trial.phaseBreak = true;
         trial.phaseCongrats=false;
-        trial.trialNum=num.parse(data[0])-1;
+        trial.trialSetNum=num.parse(data[0])-1;
+        //-1 Because the user enters number starting from 1
+        trial.trialNum=0;
         trial.transition();
+      }
+      else{
+        var alarmMsg='a:Number entered is not a legal number';//a stands for alarm
+        distributeMessage(alarmMsg);
+        print(alarmMsg);
       }
     }
   }
