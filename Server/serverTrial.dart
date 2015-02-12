@@ -9,7 +9,7 @@ class Trial{
   bool phaseCongrats=false;
   bool phaseEnd=false;
   num trialID = 0;
-  List<String> picName=[['world','waveRainbow','tree','swril','sunset',
+  List<String> picName=[['world','waveRainbow','tree','swirl','sunset',
                          'starry','spiralRainbow','fade','door','cupcake',
                          'colors','coffee','beach','balloon']
                        ];

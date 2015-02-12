@@ -47,7 +47,7 @@ void sendID (){
 void logData(String msg, String filename){
   //final filename = 'data.csv';
   //print("logging"+filename);
-  /*
+  
   try{
     var file = new File(filename);
       var sink = file.openWrite(mode: FileMode.APPEND);
@@ -59,8 +59,8 @@ void logData(String msg, String filename){
         print(exception);
         print(stacktrace);
   }
-  *
-   */
+  
+   
 }
 
  void addClient(myClient c){

@@ -26,7 +26,9 @@ class myClient {
       myState.updateBox(num.parse(data[0]), num.parse(data[1]), num.parse(data[2]), data[3]);
       myState.checkPieceLocation(num.parse(data[0]));
       //myState.myBoxes[num.parse(data[0])-1].pieceLocation();
-      logData('${time}, ${trial.trialNum}, ${tempMsg} \n', 'clientData.csv');
+      //Data Recording format: time, trialSetNumber, trialNumber, box id, box x, box y, box name.
+      time = new DateTime.now();
+      logData('${time},${trial.trialSetNum}, ${trial.trialNum}, ${data[0]}, ${data[1]}, ${data[2]}, ${data[3]} \n', 'clientData.csv');
       //print (tempMsg);
     }
     if (msg[0] == "n"){
@@ -36,21 +38,23 @@ class myClient {
       myState.assignNeighbor(num.parse(data[0]), data[1], num.parse(data[2]));
       myState.calculateScore();
     }
-    if (msg[0] == "c"){
+    if (msg[0] == "c" &&msg[1]==":"){// touch down. Extra check because it could also be "connected"
           //print(msg);
           String tempMsg = msg.substring(2);
           List<String> data = tempMsg.split(",");
           print (data);
-          logData('Touch Down: ${data} \n', 'clientData.csv');
+          time = new DateTime.now();
+          logData('${time},Touch Down: ${data} \n', 'clientData.csv');
         }
-    else if(msg[0] == "b"){
+    else if(msg[0] == "b"){//touch up
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
       //print (data);
       myState.noDrag(num.parse(data[0]));
-      
+      time = new DateTime.now();
+      logData('${time},Touch up: ${data[0]} \n', 'clientData.csv');
     }
-    else if (msg[0]=="s")//the client sent the stage to which they want to begin with
+    else if (msg[0]=="s")//the client sends the stage to which they want to begin with
       {
       String tempMsg = msg.substring(2);
       List<String> data = tempMsg.split(",");
@@ -77,6 +81,9 @@ class myClient {
         //-1 Because the user enters number starting from 1
         trial.trialNum=0;
         trial.transition();
+        time = new DateTime.now();
+        logData('${time},Stage ${data[0]} is chosen \n', 'clientData.csv');
+        logData('time, trialSetNumber, trialNumber, box_id, x, y, name\n','clientData.csv');
       }
       else{
         var alarmMsg='a:Number entered is not a legal number';//a stands for alarm
