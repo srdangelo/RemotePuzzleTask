@@ -10,6 +10,8 @@ class Box{
   bool moved;//Used to record which box has moved (used in dragging and moveAround)
   num gl_newX = random.nextInt(400);
   num gl_newY = random.nextInt(400);
+  
+  
   //Image image;
   num imageWidth=100;
   num imageHeight=100;
@@ -28,6 +30,7 @@ class Box{
     dragged = false;
     moved=false;
     //image = decodeImage(new File("images/${color}.png").readAsBytesSync());
+    
   }
 
 
@@ -75,6 +78,16 @@ class Box{
           gl_newX = random.nextInt(1200);
           gl_newY = random.nextInt(800);
           //change to game width and hieght
+          try{
+            var time = new DateTime.now();
+            logData('${time},${trial.trialSetNum}, ${trial.trialNum}, ${this.id}, ${this.x}, ${this.y}, ${this.color},'
+            +'${this.gl_newX}, ${this.gl_newY} \n'
+            , 'gameStateData.csv');
+          }
+          catch (exception,stacktrace){
+            print(exception);
+            print(stacktrace);
+          }
         }
 
   }

@@ -75,13 +75,16 @@ class State{
     sendID();
     String phaseBreak = "p:${trial.phaseStarted},${trial.phaseBreak},${trial.phaseCongrats},${trial.phaseEnd}";
     distributeMessage(phaseBreak);
-    try{
-      logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
-    }
-    catch (exception,stacktrace){
-      print(exception);
-      print(stacktrace);
-    }
+//    try{
+//      time = new DateTime.now();
+//      logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
+//      //The only problem is it records too often 
+//      //and the file will be huge for a 1 hour test.
+//    }
+//    catch (exception,stacktrace){
+//      print(exception);
+//      print(stacktrace);
+//    }
 
   }
 

@@ -193,10 +193,10 @@ class Game extends TouchLayer{
           }
         }
       }
-      if (data[0] == "s"){
+      if (data[0] == "s"){//score
         score = data.substring(2);
       }
-      if (data[0] == "p"){
+      if (data[0] == "p"){//phase info
         List<String> phaseData = data.substring(2).split(",");
         if (phaseData.length>=4){
            phaseStarted=phaseData[0];

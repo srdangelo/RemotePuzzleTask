@@ -47,19 +47,16 @@ void sendID (){
 void logData(String msg, String filename){
   //final filename = 'data.csv';
   //print("logging"+filename);
-  
-  try{
-    var file = new File(filename);
-      var sink = file.openWrite(mode: FileMode.APPEND);
-      sink.write(msg);
-  } on FileSystemException catch (ex){
-    print(ex);
+  print(msg);
+ 
+//    var file = new File(filename);
+//      var sink = file.openWrite(mode: FileMode.APPEND);
+  if (filename=='gameStateData.csv'){
+    sinkgameStateData.write(msg);
   }
-  catch (exception,stacktrace){
-        print(exception);
-        print(stacktrace);
+  else if (filename=='clientData.csv'){
+    sinkclientData.write(msg);
   }
-  
    
 }
 
@@ -81,8 +78,10 @@ var random = new Random();
 //initalize myState global var.
 State myState;
 Trial trial;
-
-
+var filegameStateData;
+var sinkgameStateData;
+var fileclientData;
+var sinkclientData;
 
 //server handling the path for files, might not be needed
 //void directoryHandler(dir, request) {
@@ -93,7 +92,10 @@ Trial trial;
 
 
 void main() {
-
+  filegameStateData = new File('gameStateData.csv');
+  sinkgameStateData = filegameStateData.openWrite(mode: FileMode.APPEND);
+  fileclientData=new File('clientData.csv');
+  sinkclientData=fileclientData.openWrite(mode: FileMode.APPEND);
   //server pathing
   //var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
   var pathToBuild = "/Users/SESPWalkup/Documents/GitHub/RemotePuzzleTask/build/web";
@@ -136,5 +138,5 @@ void main() {
   //setup times to update the state and send out messages to clients out with state information
   //running at about 15fps
   new Timer.periodic(const Duration(milliseconds : 30), (timer) => myState.updateState());
-
+  
 }
