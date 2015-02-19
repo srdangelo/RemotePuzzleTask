@@ -97,8 +97,8 @@ void main() {
   fileclientData=new File('clientData.csv');
   sinkclientData=fileclientData.openWrite(mode: FileMode.APPEND);
   //server pathing
-  //var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
-  var pathToBuild = "C:\Users\sdb538\Desktop\RemotePuzzleTask\build\web";
+  var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
+  //var pathToBuild = "C:\Users\sdb538\Desktop\RemotePuzzleTask\build\web";
   var staticFiles = new VirtualDirectory(pathToBuild);
   staticFiles.allowDirectoryListing = true;
   staticFiles.directoryHandler = (dir, request) {
