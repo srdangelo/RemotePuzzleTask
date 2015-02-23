@@ -60,6 +60,7 @@ class Box implements Touchable{
     dragged = true;
     touched_x_offset=x-e.touchX;
     touched_y_offset=y-e.touchY;
+    ws.send("c:${id}, ${color}, ${game.clientID}");
     return true;
   }
 

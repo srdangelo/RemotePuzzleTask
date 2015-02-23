@@ -10,6 +10,8 @@ class Box{
   bool moved;//Used to record which box has moved (used in dragging and moveAround)
   num gl_newX = random.nextInt(400);
   num gl_newY = random.nextInt(400);
+  
+  
   //Image image;
   num imageWidth=100;
   num imageHeight=100;
@@ -28,6 +30,7 @@ class Box{
     dragged = false;
     moved=false;
     //image = decodeImage(new File("images/${color}.png").readAsBytesSync());
+    
   }
 
 
@@ -75,14 +78,24 @@ class Box{
           gl_newX = random.nextInt(1200);
           gl_newY = random.nextInt(800);
           //change to game width and hieght
+          try{
+            var time = new DateTime.now();
+            logData('${time},${trial.trialSetNum}, ${trial.trialNum}, ${this.id}, ${this.x}, ${this.y}, ${this.color},'
+            +'${this.gl_newX}, ${this.gl_newY} \n'
+            , 'gameStateData.csv');
+          }
+          catch (exception,stacktrace){
+            print(exception);
+            print(stacktrace);
+          }
         }
 
   }
   //return the root of the group to which box belongs
-  Box getParent(Box box){
-    if (box.parentGroup==null)
-      return box;
-    else return getParent(box.parentGroup);
+  Box getParent(){
+    if (this.parentGroup==null)
+      return this;
+    else return this.parentGroup.getParent();
   }
   
   void pieceLocation ()
@@ -91,6 +104,7 @@ class Box{
     //1 on top of 3. 1 and 3 should be combined but they;re not. Because this program only
     //checks for 2.
     {
+      var success=false;
       num distance = 20;
       Box box=this;
       imageWidth=100;
@@ -106,8 +120,10 @@ class Box{
              box.rightNeighbor = box.rightBuddy;
              box.rightBuddy.leftNeighbor = box;
              print ('right neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'right', box.rightNeighbor.id);
              myState.calculateScore();
+             
           }
         }
         if (box.leftBuddy != null && box.leftNeighbor==null){
@@ -119,6 +135,7 @@ class Box{
              box.leftNeighbor = box.leftBuddy;
              box.leftBuddy.rightNeighbor = box;
              print ('left neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'left', box.leftNeighbor.id);
              myState.calculateScore();
           }
@@ -132,6 +149,7 @@ class Box{
              box.upperNeighbor = box.upperBuddy;
              box.upperBuddy.lowerNeighbor = box;
              print ('upper neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'upper', box.upperNeighbor.id);
              myState.calculateScore();
           }
@@ -145,6 +163,7 @@ class Box{
              box.lowerNeighbor = box.lowerBuddy;
              box.lowerBuddy.upperNeighbor = box;
              print ('lower neighbors!');
+             success=true;
              myState.assignNeighbor(box.id, 'lower', box.lowerNeighbor.id);
              myState.calculateScore();
           }

@@ -10,7 +10,9 @@ class State{
   List<Box> myBoxes;
 
   var score = 100;
-
+  var lastCount=0;
+  var potential=2;//Potential is how many dragging one could do before getting their points deducted.
+  var lastPotential=2;
   State(){
     myBoxes = new List<Box>();
   }
@@ -19,6 +21,7 @@ class State{
   //add object
   addBox(Box newBox){
     myBoxes.add(newBox);
+    lastCount++;
   }
 
 
@@ -70,26 +73,34 @@ class State{
     }
     distributeMessage(msg);
     sendID();
-    String phaseBreak = "p:${trial.phaseBreak}";
+    String phaseBreak = "p:${trial.phaseStarted},${trial.phaseBreak},${trial.phaseCongrats},${trial.phaseEnd}";
     distributeMessage(phaseBreak);
-    try{
-      logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
-    }
-    catch (exception,stacktrace){
-      print(exception);
-      print(stacktrace);
-    }
+//    try{
+//      time = new DateTime.now();
+//      logData('${time}, ${trial.trialNum}, ${msg} \n', 'gameStateData.csv');
+//      //The only problem is it records too often 
+//      //and the file will be huge for a 1 hour test.
+//    }
+//    catch (exception,stacktrace){
+//      print(exception);
+//      print(stacktrace);
+//    }
 
   }
 
   //simple command to toggle the dragging interaction
   noDrag(num id){
-    for(Box box in myBoxes){
-      if(id == box.id){
-        box.dragged = false;
-      }
-    }
-  }
+    Box boxNolongerDragged=myBoxes[id-1];
+    boxNolongerDragged.dragged=false;
+//    for (Box box in myBoxes){        
+//      if (box.getParent()==boxNolongerDragged.getParent()){
+//        box.dragged=false;
+//      }
+//    }
+    potential-=1;
+    calculateScore();
+    return;
+}
 
   //if a object is dragged, this is called when the 'd' command is recieved
   updateBox(num id, num x, num y, String color){
@@ -142,6 +153,7 @@ class State{
        }
       }
     }
+    potential+=2;//Add 2 to the potential for every successful neighbor assignment.
   }
   
   assignParent (Box box1, Box box2){
@@ -176,7 +188,6 @@ class State{
     }
   }
   calculateScore(){
-      score=0;
       int count=0;
       for(Box box in myBoxes){
         if (box.parentGroup==null)
@@ -184,11 +195,26 @@ class State{
           count++;
         }
       }
-      
-      if (count==1)
+      if (count!=lastCount){
+        score+=(lastCount-count)*20;
+        lastCount=count;
+      }
+      if (count==1){
+        //new Timer(new Duration(seconds: 9),()=>print("timeout"));
+        //Wait ten seconds to show the result of last puzzle.
+        //new Timer(new Duration(milliseconds: 500),()=>trial.transition());
         trial.transition();
-      if (count>1){
-        score=100*(myBoxes.length-count+1)/myBoxes.length; 
+        print("timeout");
+      }
+      if (potential!=lastPotential){
+        if (potential<0){
+          score+=(potential-lastPotential)*10;//deduct points when potential becomes negative
+          potential=0;
+          lastPotential=0;
+        }
+        else{
+          lastPotential=potential;
+        }
       }
       var sendScore = "s: ${score} \n";
       distributeMessage(sendScore);
@@ -221,9 +247,19 @@ class State{
       else{
         box.lowerBuddy= myBoxes[i+myBoxesLengthSqrt];
         box.upperBuddy= myBoxes[i-myBoxesLengthSqrt];
-      }
     }
   }
-        
+  }
+  checkPieceLocation(num id){
+    Box boxDragged = myBoxes[id-1];
+    boxDragged.pieceLocation();
+//    for (Box box in myBoxes){
+//      if (box.getParent()==boxDragged.getParent()){
+//        box.dragged=true;
+//        box.pieceLocation();
+//        
+//      }
+//    }
+  }
   
 }

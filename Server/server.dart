@@ -47,20 +47,17 @@ void sendID (){
 void logData(String msg, String filename){
   //final filename = 'data.csv';
   //print("logging"+filename);
-  /*
-  try{
-    var file = new File(filename);
-      var sink = file.openWrite(mode: FileMode.APPEND);
-      sink.write(msg);
-  } on FileSystemException catch (ex){
-    print(ex);
+  print(msg);
+ 
+//    var file = new File(filename);
+//      var sink = file.openWrite(mode: FileMode.APPEND);
+  if (filename=='gameStateData.csv'){
+    sinkgameStateData.write(msg);
   }
-  catch (exception,stacktrace){
-        print(exception);
-        print(stacktrace);
+  else if (filename=='clientData.csv'){
+    sinkclientData.write(msg);
   }
-  *
-   */
+   
 }
 
  void addClient(myClient c){
@@ -81,8 +78,10 @@ var random = new Random();
 //initalize myState global var.
 State myState;
 Trial trial;
-
-
+var filegameStateData;
+var sinkgameStateData;
+var fileclientData;
+var sinkclientData;
 
 //server handling the path for files, might not be needed
 //void directoryHandler(dir, request) {
@@ -93,10 +92,13 @@ Trial trial;
 
 
 void main() {
-
+  filegameStateData = new File('gameStateData.csv');
+  sinkgameStateData = filegameStateData.openWrite(mode: FileMode.APPEND);
+  fileclientData=new File('clientData.csv');
+  sinkclientData=fileclientData.openWrite(mode: FileMode.APPEND);
   //server pathing
   var pathToBuild = "/Users/sarahdangelo/dart/RemotePuzzleTask/build/web";
-
+  //var pathToBuild = "C:\Users\sdb538\Desktop\RemotePuzzleTask\build\web";
   var staticFiles = new VirtualDirectory(pathToBuild);
   staticFiles.allowDirectoryListing = true;
   staticFiles.directoryHandler = (dir, request) {
@@ -108,14 +110,14 @@ void main() {
   final PORT = 8084;
   
   //serve the test.html to port 8080
-  HttpServer.bind('10.101.156.187', 8084).then((server) {
+  HttpServer.bind(InternetAddress.ANY_IP_V4, 8084).then((server) {
   //HttpServer.bind('127.0.0.1', 8084).then((server) {
     server.listen(staticFiles.serveRequest);
   });
 
   //setup websocket at 4040
   runZoned(() {
-    HttpServer.bind('10.101.156.187', 4040).then((server) {
+    HttpServer.bind(InternetAddress.ANY_IP_V4, 4040).then((server) {
     //HttpServer.bind('127.0.0.1', 4040).then((server) {
       server.listen((HttpRequest req) {
         if (req.uri.path == '/ws') {
@@ -136,5 +138,5 @@ void main() {
   //setup times to update the state and send out messages to clients out with state information
   //running at about 15fps
   new Timer.periodic(const Duration(milliseconds : 30), (timer) => myState.updateState());
-
+  
 }
